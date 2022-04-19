@@ -1,4 +1,4 @@
-import LibraryConstants from '../../constants';
+import LibraryConstants from '@thzero/library_server/constants';
 
 import AdminRoute from './index'
 

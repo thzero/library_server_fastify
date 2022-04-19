@@ -1,10 +1,8 @@
-import LibraryConstants from '../constants';
+import LibraryConstants from '@thzero/library_server/constants';
 
 import Utility from '@thzero/library_common/utility';
 
 import BaseRoute from './index';
-
-import authentication from '../middleware/authentication';
 
 class BaseNewsRoute extends BaseRoute {
 	constructor(prefix, version) {
@@ -24,12 +22,22 @@ class BaseNewsRoute extends BaseRoute {
 	}
 
 	_initializeRoutes(router) {
-		// authentication(false),
 		router.get(this._join('/latest/:date'), 
+			// authentication(false),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					// router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					required: false,
+					roles: [ 'news' ]
+				}),
+			},
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_NEWS);
-				// const response = (await service.latest(ctx.correlationId, ctx.state.user, parseInt(ctx.params.date))).check(ctx);
-				const response = (await request.serviceNews.latest(request.correlationId, request.user, parseInt(request.params.date))).check(request);
+				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_NEWS].latest(request.correlationId, request.user, parseInt(request.params.date))).check(request);
 				this._jsonResponse(reply, Utility.stringify(response));
 			});
 	}
