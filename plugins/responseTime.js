@@ -65,24 +65,29 @@ export default fastifyPlugin((instance, opts, done) => {
 
 	// Hook to be triggered just before response to be send
 	instance.addHook('onSend', (request, reply, payload, next) => {
+		const headers = [];
+
 		// check if Server-Timing need to be added
 		const serverTiming = (reply.raw ? reply.raw[symbolServerTiming] : reply.res[symbolServerTiming]);
-		const headers = [];
-		for (const name of Object.keys(serverTiming)) {
-			headers.push(serverTiming[name]);
-		}
-		if (headers.length) {
-			reply.header('Server-Timing', headers.join(','));
+		if (serverTiming) {
+			for (const name of Object.keys(serverTiming)) {
+				headers.push(serverTiming[name]);
+			}
+			if (headers.length) {
+				reply.header('Server-Timing', headers.join(','));
+			}
 		}
 
 		// Calculate the duration, in nanoseconds …
 		const hrDuration = (request.raw ? request.raw[symbolRequestTime] : request.req[symbolRequestTime]);
-		// … convert it to milliseconds …
-		const duration = (hrDuration[0] * 1e3 + hrDuration[1] / 1e6).toFixed(opts.digits);
-		// … add the header to the response
-		reply.header(opts.header, duration);
+		if (hrDuration) {
+			// … convert it to milliseconds …
+			const duration = (hrDuration[0] * 1e3 + hrDuration[1] / 1e6).toFixed(opts.digits);
+			// … add the header to the response
+			reply.header(opts.header, duration);
 
-		opts.logger.info2(`${request.method} ${request.url} - ${duration}`);
+			opts.logger.info2(`${request.method} ${request.url} - ${duration}`);
+		}
 
 		next();
 	});

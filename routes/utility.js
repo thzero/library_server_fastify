@@ -1,13 +1,8 @@
-import koaBody from 'koa-body';
-
-import LibraryConstants from '../constants';
+import LibraryConstants from '@thzero/library_server/constants';
 
 import Utility from '@thzero/library_common/utility';
 
 import BaseRoute from './index';
-
-import authentication from '../middleware/authentication';
-// import authorization from '../middleware/authorization';
 
 class UtilityRoute extends BaseRoute {
 	constructor(prefix) {
@@ -28,16 +23,23 @@ class UtilityRoute extends BaseRoute {
 
 	_initializeRoutes(router) {
 		router.post('/logger',
-			authentication(false),
-			// authorization('utility'),
-			// eslint-disable-next-line,
-			koaBody({
-				text: false,
-			}),
-			async (ctx, next) => {
+			// authentication(false),
+			// // authorization('utility'),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					// router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					required: false,
+					roles: [ 'utility' ]
+				}),
+			},
+			// eslint-disable-next-line
+			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_UTILITY);
-				// const response = (await service.logger(ctx.correlationId, ctx.request.body)).check(ctx);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationI, request.body)).check(request);
+				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
 				this._jsonResponse(reply, Utility.stringify(response));
 			}
 		);

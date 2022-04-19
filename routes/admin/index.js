@@ -1,11 +1,6 @@
-import koaBody from 'koa-body';
-
-import Utility from '@thzero/library_common/utility';
+import LibraryUtility from '@thzero/library_common/utility';
 
 import BaseRoute from '../index';
-
-import authentication from '../../middleware/authentication';
-import authorization from '../../middleware/authorization';
 
 class AdminBaseRoute extends BaseRoute {
 	constructor(urlFragment, role, serviceKey) {
@@ -22,10 +17,9 @@ class AdminBaseRoute extends BaseRoute {
 		// this._service = null;
 	}
 
-	async init(injector, config) {
-		const router = await super.init(injector, config);
-		router.service = injector.getService(this._options.serviceKey);
-		// this._service = injector.getService(this._options.serviceKey);
+	async init(injector, app, config) {
+		await super.init(injector, app, config);
+		this._inject(app, injector, this._options.serviceKey, this._options.serviceKey);
 	}
 
 	_allowsCreate() {
@@ -42,51 +36,67 @@ class AdminBaseRoute extends BaseRoute {
 
 	_initializeRoutesCreate(router) {
 		const self = this;
-		router.post('/',
-			authentication(true),
-			authorization([ `${self._options.role}.create` ]),
-			koaBody({
-				text: false,
-			}),
+		router.post(this._join('/'),
+			// authentication(true),
+			// authorization([ `${self._options.role}.create` ]),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					roles: [ `${self._options.role}.create` ]
+				}),
+			},
 			// eslint-disable-next-line
-			async (ctx, next) => {
-				// const service = this._injector.getService(this._options.serviceKey);
-				// const response = (await router.service.create(ctx.correlationId, ctx.state.user, ctx.request.body)).check(ctx);
-				const response = (await ctx.router.service.create(ctx.correlationId, ctx.state.user, ctx.request.body)).check(ctx);
-				this._jsonResponse(ctx, Utility.stringify(response));
+			async (request, reply) => {
+				const response = (await router[this._options.serviceKey].create(request.correlationId, request.user, request.body)).check(request);
+				this._jsonResponse(reply, LibraryUtility.stringify(response));
 			}
 		);
 	}
 
 	_initializeRoutesDelete(router) {
-		const self = this;
-		router.delete('/:id',
-			authentication(true),
-			authorization([ `${self._options.role}.delete` ]),
+		router.delete(this._join('/:id'),
+			// authentication(true),
+			// authorization([ `${this._options.role}.delete` ]),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					roles: [ `${this._options.role}.delete` ]
+				}),
+			},
 			// eslint-disable-next-line
-			async (ctx, next) => {
-				// const service = this._injector.getService(this._options.serviceKey);
-				// const response = (await service.delete(ctx.correlationId, ctx.state.user, ctx.params.id)).check(ctx);
-				const response = (await ctx.router.service.delete(ctx.correlationId, ctx.state.user, ctx.params.id)).check(ctx);
-				this._jsonResponse(ctx, Utility.stringify(response));
+			async (request, reply) => {
+				const response = (await router[this._options.serviceKey].delete(request.correlationId, request.user, request.params.id)).check(request);
+				this._jsonResponse(reply, LibraryUtility.stringify(response));
 			}
 		);
 	}
 
 	_initializeRoutesUpdate(router) {
-		const self = this;
-		router.post('/:id',
-			authentication(true),
-			authorization([ `${self._options.role}.update` ]),
-			koaBody({
-				text: false,
-			}),
+		router.post(this._join('/:id'),
+			// authentication(true),
+			// authorization([ `${this._options.role}.update` ]),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					roles: [ `${this._options.role}.update` ]
+				}),
+			},
 			// eslint-disable-next-line
-			async (ctx, next) => {
-				// const service = this._injector.getService(this._options.serviceKey);
-				// const response = (await service.update(ctx.correlationId, ctx.state.user, ctx.params.id, ctx.request.body)).check(ctx);
-				const response = (await ctx.router.service.update(ctx.correlationId, ctx.state.user, ctx.params.id, ctx.request.body)).check(ctx);
-				this._jsonResponse(ctx, Utility.stringify(response));
+			async (request, reply) => {
+				const response = (await router[this._options.serviceKey].update(request.correlationId, request.user, request.params.id, request.body)).check(request);
+				this._jsonResponse(reply, LibraryUtility.stringify(response));
 			}
 		);
 	}
@@ -95,18 +105,23 @@ class AdminBaseRoute extends BaseRoute {
 		if (this._allowsDelete)
 			this._initializeRoutesDelete(router);
 
-		router.post('/search',
-			authentication(true),
-			authorization([ `${this._options.role}.search` ]),
-			koaBody({
-				text: false,
-			}),
+		router.post(this._join('/search'),
+			// authentication(true),
+			// authorization([ `${this._options.role}.search` ]),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					router.authorizationDefault
+				], 
+				{ 
+					relation: 'and',
+					roles: [ `${this._options.role}.search` ]
+				}),
+			},
 			// eslint-disable-next-line
-			async (ctx, next) => {
-				// const service = this._injector.getService(this._options.serviceKey);
-				// const response = (await service.search(ctx.correlationId, ctx.state.user, ctx.request.body)).check(ctx);
-				const response = (await ctx.router.service.search(ctx.correlationId, ctx.state.user, ctx.request.body)).check(ctx);
-				this._jsonResponse(ctx, Utility.stringify(response));
+			async (request, reply) => {
+				const response = (await router[this._options.serviceKey].search(request.correlationId, request.user, request.body)).check(request);
+				this._jsonResponse(reply, LibraryUtility.stringify(response));
 			}
 		);
 

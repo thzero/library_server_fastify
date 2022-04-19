@@ -1,9 +1,11 @@
 import path from 'path';
 
 import Fastify from 'fastify';
-import fastifyAuth from 'fastify-auth';
+// import fastifyAuth from 'fastify-auth';
+import fastifyAuth from '../plugins/auth';
 import fastifyCors from 'fastify-cors';
 import fastifyHelmet from 'fastify-helmet';
+import fastifyRoutes from 'fastify-routes';
 import fastifyStatic from 'fastify-static';
 
 import LibraryConstants from '@thzero/library_server/constants';
@@ -16,6 +18,9 @@ import pluginApiKey from '@thzero/library_server_fastify/plugins/apiKey';
 import pluginResponseTime from '@thzero/library_server_fastify/plugins/responseTime';
 import pluginSettings from '@thzero/library_server_fastify/plugins/settings';
 import pluginUsageMetrics from '@thzero/library_server_fastify/plugins/usageMetrics';
+
+import authenticationDefault from '../middleware/authentication';
+import authorizationDefault from '../middleware/authorization';
 
 class FastifyBootMain extends BootMain {
 	async _initApp(args, plugins) {
@@ -32,6 +37,8 @@ class FastifyBootMain extends BootMain {
 		const fastify = Fastify({ logger: true });
 		const serverHttp = fastify.server;
 
+		await fastify.register(fastifyRoutes);
+
 		// // https://github.com/koajs/cors
 		// app.use(koaCors({
 		// 	allowMethods: 'GET,POST,DELETE',
@@ -41,23 +48,37 @@ class FastifyBootMain extends BootMain {
 		// 	origin: '*'
 		// }));
 		// https://github.com/fastify/fastify-cors
-		fastify.register(fastifyCors, { 
-			allowMethods: 'GET,POST,DELETE',
-			maxAge : 7200,
-			allowHeaders: `${LibraryConstants.Headers.AuthKeys.API}, ${LibraryConstants.Headers.AuthKeys.AUTH}, ${LibraryConstants.Headers.CorrelationId}, Content-Type`,
+		// fastify.register(fastifyCors, { 
+		// 	allowMethods: 'GET,POST,DELETE',
+		// 	maxAge : 7200,
+		// 	allowHeaders: `${LibraryConstants.Headers.AuthKeys.API}, ${LibraryConstants.Headers.AuthKeys.AUTH}, ${LibraryConstants.Headers.CorrelationId}, Content-Type`,
+		// 	credentials: true,
+		// 	origin: '*'
+		// });
+		const corsOptionsDefault = this._initCors({
+			allowHeaders: [ LibraryConstants.Headers.AuthKeys.API, LibraryConstants.Headers.AuthKeys.AUTH, LibraryConstants.Headers.CorrelationId, 'Content-Type' ],
 			credentials: true,
+			maxAge : 7200,
+			methods: ['GET', 'POST', 'DELETE'],
 			origin: '*'
+		});
+		await fastify.register(fastifyCors, (instance) => {
+			return (req, callback) => {
+				let corsOptions = corsOptionsDefault;
+				callback(null, corsOptions) // callback expects two parameters: error and options
+			}
 		});
 		
 		// // https://www.npmjs.com/package/koa-helmet
 		// app.use(koaHelmet());
 		// https://github.com/fastify/fastify-helmet
-		fastify.register(
-			fastifyHelmet,
+		const helmetOptions = this._initHelmet({ 
 			// Example disables the `contentSecurityPolicy` middleware but keeps the rest.
-			{ 
-				// contentSecurityPolicy: false 
-			}
+			// contentSecurityPolicy: false 
+		});
+		await fastify.register(
+			fastifyHelmet,
+			helmetOptions
 		);
 
 		// // error
@@ -77,7 +98,7 @@ class FastifyBootMain extends BootMain {
 		// 		});
 		// 	}
 		// });
-		fastify.register(async (instance, opts, done) => {
+		await fastify.register(async (instance, opts, done) => {
 			// try {
 			// 	done();
 			// }
@@ -117,7 +138,7 @@ class FastifyBootMain extends BootMain {
 
 		// 	done();
 		// });
-		fastify.register(pluginSettings, {
+		await fastify.register(pluginSettings, {
 			config: this._appConfig
 		});
 
@@ -136,14 +157,14 @@ class FastifyBootMain extends BootMain {
 		// 	ctx.set(ResponseTime, delta);
 		// });
 		// https://github.com/lolo32/fastify-response-time
-		fastify.register(pluginResponseTime, {
+		await fastify.register(pluginResponseTime, {
 			logger: this.loggerServiceI
 		});
 
 		// app.use(koaStatic('./public'));
 		// https://github.com/fastify/fastify-static
 		const __dirname = path.resolve();
-		fastify.register(fastifyStatic, {
+		await fastify.register(fastifyStatic, {
 			root: path.join(__dirname, 'public'),
 			prefix: '/public/', // optional: default '/'
 		});
@@ -218,15 +239,20 @@ class FastifyBootMain extends BootMain {
 
 		// 	done();
 		// });
-		fastify.register(pluginApiKey, {
+		await fastify.register(pluginApiKey, {
 			logger: this.loggerServiceI,
 			usageMetrics: this.usageMetricsServiceI
 		});
 
-		fastify.register(fastifyAuth, {
-			logger: this.loggerServiceI,
-			usageMetrics: this.usageMetricsServiceI
-		});
+		await fastify.register(fastifyAuth);
+
+		const capitalize = (word) => {
+			return word[0].toUpperCase() + word.slice(1).toLowerCase();
+		};
+		for (let [key, value] of this._initAuthentication(new Map()).entries())
+			fastify.decorate('authentication' + capitalize(key), value);
+		for (let [key, value] of this._initAuthorization(new Map()).entries())
+			fastify.decorate('authorization' + capitalize(key), value);
 
 		this._initPostAuth(fastify);
 
@@ -242,15 +268,18 @@ class FastifyBootMain extends BootMain {
 		console.log();
 
 		for (const route of this._routes) {
+			console.log(route);
 			await route.init(injector, fastify, this._appConfig);
-
-			console.log([ route.id ]);
-
-			// for (let i = 0; i < route.router.stack.length; i++)
-			// 	console.log([ route.router.stack[i].path, route.router.stack[i].methods ]);
-
-			console.log();
 		}
+
+		let methods;
+		for (let [key, value] of fastify.routes.entries()) {
+			methods = [];
+			for (let item of value)
+				methods.push(item.method);
+			console.log([ key, methods ]);
+		}
+		console.log();
 
 		// // usage metrics
 		// app.use(async (ctx, next) => {
@@ -259,7 +288,7 @@ class FastifyBootMain extends BootMain {
 		// 		this.loggerServiceI.error('KoaBootMain', 'start', 'usageMetrics', err);
 		// 	});
 		// });
-		fastify.register(pluginUsageMetrics, {
+		await fastify.register(pluginUsageMetrics, {
 			logger: this.loggerServiceI,
 			usageMetrics: this.usageMetricsServiceI
 		});
@@ -267,12 +296,31 @@ class FastifyBootMain extends BootMain {
 		return { app: fastify, server: serverHttp, listen: fastify.listen };
     }
 
+	_initAuthentication(map) {
+		map.set('default', authenticationDefault);
+		return map;
+	}
+
+	_initAuthorization(map) {
+		map.set('default', authorizationDefault);
+		return map;
+	}
+
 	_initAppListen(app, server, port, err) {
 		app.listen(port, err);
 	}
 
 	async _initAppPost(app, args) {
 		this._initPostRoutes(app);
+	}
+
+	_initCors(options) {
+		// https://github.com/fastify/fastify-cors
+		return options;
+	}
+
+	_initHelmet(options) {
+		return options;
 	}
 
 	_initRoute(route) {
