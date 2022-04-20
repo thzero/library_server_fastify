@@ -13,11 +13,13 @@ function getAuthToken(request, logger) {
 
 	const token = request.headers[LibraryConstants.Headers.AuthKeys.AUTH];
 	logger.debug('middleware', 'getAuthToken', 'token', token, request.correlationId);
-	const split = token.split(LibraryConstants.Headers.AuthKeys.AUTH_BEARER + separator);
-	logger.debug('middleware', 'getAuthToken', 'split', split, request.correlationId);
-	logger.debug('middleware', 'getAuthToken', 'split.length', split.length, request.correlationId);
-	if (split.length > 1)
-		return split[1];
+	if (!String.isNullOrEmpty(token)) {
+		const split = token.split(LibraryConstants.Headers.AuthKeys.AUTH_BEARER + separator);
+		logger.debug('middleware', 'getAuthToken', 'split', split, request.correlationId);
+		logger.debug('middleware', 'getAuthToken', 'split.length', split.length, request.correlationId);
+		if (split.length > 1)
+			return split[1];
+	}
 
 	logger.debug('middleware', 'getAuthToken', 'fail', null, request.correlationId);
 	return null;
@@ -31,24 +33,26 @@ export default async (request, reply, done, options) => {
 	const token = getAuthToken(request, logger);
 	logger.debug('middleware', 'authentication', 'token', token, request.correlationId);
 	logger.debug('middleware', 'authentication', 'required', required, request.correlationId);
-	const valid = ((required && !String.isNullOrEmpty(token)) || !required);
-	logger.debug('middleware', 'authentication', 'valid', valid, request.correlationId);
-	if (valid) {
-		if (!String.isNullOrEmpty(token)) {
-			const service = injector.getService(LibraryConstants.InjectorKeys.SERVICE_AUTH);
-			const results = await service.verifyToken(request.correlationId, token);
-			logger.debug('middleware', 'authentication', 'results', results, request.correlationId);
-			if (!results || !results.success) {
-				logger.warn('middleware', 'authentication', 'Unauthenticated... invalid token', null, request.correlationId);
-				ctx.throw(401);
-				return;
-			}
-
-			request.token = token;
-			request.user = results.user;
-			request.claims = results.claims;
+	logger.debug('middleware', 'authentication', 'valid1', (required && !String.isNullOrEmpty(token)), request.correlationId);
+	if (required && !String.isNullOrEmpty(token)) {
+		const service = injector.getService(LibraryConstants.InjectorKeys.SERVICE_AUTH);
+		const results = await service.verifyToken(request.correlationId, token);
+		logger.debug('middleware', 'authentication', 'results', results, request.correlationId);
+		if (!results || !results.success) {
+			logger.warn('middleware', 'authentication', 'Unauthenticated... invalid token', null, request.correlationId);
+			ctx.throw(401);
+			return;
 		}
 
+		request.token = token;
+		request.user = results.user;
+		request.claims = results.claims;
+
+		// done(); // not for async
+		return;
+	}
+	logger.debug('middleware', 'authentication', 'valid2', !required, request.correlationId);
+	if (!required) {
 		// done(); // not for async
 		return;
 	}
