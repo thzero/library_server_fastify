@@ -1,5 +1,3 @@
-import LibraryUtility from '@thzero/library_common/utility';
-
 import BaseRoute from '../index';
 
 class AdminBaseRoute extends BaseRoute {
@@ -52,7 +50,7 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].create(request.correlationId, request.user, request.body)).check(request);
-				this._jsonResponse(reply, LibraryUtility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -74,7 +72,7 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].delete(request.correlationId, request.user, request.params.id)).check(request);
-				this._jsonResponse(reply, LibraryUtility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -96,7 +94,7 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].update(request.correlationId, request.user, request.params.id, request.body)).check(request);
-				this._jsonResponse(reply, LibraryUtility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -121,7 +119,7 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].search(request.correlationId, request.user, request.body)).check(request);
-				this._jsonResponse(reply, LibraryUtility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 
