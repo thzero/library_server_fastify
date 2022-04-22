@@ -9,6 +9,7 @@ import fastifyRoutes from 'fastify-routes';
 import fastifyStatic from 'fastify-static';
 
 import LibraryConstants from '@thzero/library_server/constants';
+import LibraryCommonServiceConstants from '@thzero/library_common_service/constants';
 
 import injector from '@thzero/library_common/utility/injector';
 
@@ -249,10 +250,18 @@ class FastifyBootMain extends BootMain {
 		const capitalize = (word) => {
 			return word[0].toUpperCase() + word.slice(1).toLowerCase();
 		};
-		for (let [key, value] of this._initAuthentication(new Map()).entries())
-			fastify.decorate('authentication' + capitalize(key), value);
-		for (let [key, value] of this._initAuthorization(new Map()).entries())
-			fastify.decorate('authorization' + capitalize(key), value);
+		
+		let item;
+		for (let [key, value] of this._initAuthentication(new Map()).entries()) {
+			item = value.init(injector);
+			fastify.decorate('authentication' + capitalize(key), item.callback);
+			fastify.decorate('authenticationMiddleware' + capitalize(key), item.service);
+		}
+		for (let [key, value] of this._initAuthorization(new Map()).entries()) {
+			item = value.init(injector);
+			fastify.decorate('authorization' + capitalize(key), item.callback);
+			fastify.decorate('authorizationMiddleware' + capitalize(key), item.service);
+		}
 
 		this._initPostAuth(fastify);
 
@@ -297,12 +306,12 @@ class FastifyBootMain extends BootMain {
     }
 
 	_initAuthentication(map) {
-		map.set('default', authenticationDefault);
+		map.set('default', new authenticationDefault());
 		return map;
 	}
 
 	_initAuthorization(map) {
-		map.set('default', authorizationDefault);
+		map.set('default', new authorizationDefault());
 		return map;
 	}
 

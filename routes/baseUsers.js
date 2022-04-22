@@ -48,7 +48,7 @@ class BaseUsersRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].fetchByGamerId(request.correlationId, request.params.gamerId)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -72,7 +72,7 @@ class BaseUsersRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTag(request.correlationId, request.params.gamerTag)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -95,7 +95,7 @@ class BaseUsersRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].refreshSettings(request.correlationId, request.body)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -118,7 +118,7 @@ class BaseUsersRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].update(request.correlationId, request.body)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -141,7 +141,7 @@ class BaseUsersRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].updateSettings(request.correlationId, request.body)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}

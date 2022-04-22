@@ -40,7 +40,7 @@ class UtilityRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_UTILITY);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
-				this._jsonResponse(reply, Utility.stringify(response));
+				this._jsonResponse(reply, response);
 			}
 		);
 	}

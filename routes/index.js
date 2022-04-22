@@ -1,5 +1,7 @@
 import fastifyPlugin from 'fastify-plugin';
 
+import Utility from '@thzero/library_common/utility';
+
 import BaseRoute from'@thzero/library_server/routes/index';
 
 class FastifyBaseRoute extends BaseRoute {
@@ -32,7 +34,7 @@ class FastifyBaseRoute extends BaseRoute {
 		reply
 			.code(200)
 			.header('Content-Type', 'application/json; charset=utf-8')
-			.send(json);
+			.send((typeof user === 'string') ? json : Utility.stringify(json));
 	}
 }
 
