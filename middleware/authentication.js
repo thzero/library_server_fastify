@@ -12,6 +12,7 @@ class DefaultAuthenticationMiddleware {
 	init(injector) {
 		this._serviceAuth = injector.getService(LibraryConstants.InjectorKeys.SERVICE_AUTH);
 		this._serviceLogger = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_LOGGER);
+		this._serviceUsageMetrics = injector.getService(LibraryConstants.InjectorKeys.SERVICE_USAGE_METRIC);
 
 		return {
 			callback: async (request, reply, done, options) => {
@@ -60,8 +61,7 @@ class DefaultAuthenticationMiddleware {
 				querystring: request.query,
 				token: request.token
 			};
-			const serviceUsageMetrics = request.server[LibraryConstants.InjectorKeys.SERVICE_USAGE_METRIC];
-			await serviceUsageMetrics.register(usageMetrics).catch((err) => {
+			await this._serviceUsageMetrics.register(usageMetrics).catch((err) => {
 				this._serviceLogger.error('middleware', 'authentication', err, null, request.correlationId);
 			});
 		})();
