@@ -35,6 +35,7 @@ class FastifyBootMain extends BootMain {
 
 		let http2 = this._appConfig.get('http2', false);
 		http2 = http2 === 'true' ? true : false;
+		this.loggerServiceI.info2(`config.http2.override: ${http2}`);
 		  
 		// const fastify = Fastify({ serverFactory, logger: true });
 		const fastify = Fastify({ 
