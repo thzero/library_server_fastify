@@ -9,7 +9,6 @@ import fastifyRoutes from 'fastify-routes';
 import fastifyStatic from 'fastify-static';
 
 import LibraryConstants from '@thzero/library_server/constants';
-import LibraryCommonServiceConstants from '@thzero/library_common_service/constants';
 
 import injector from '@thzero/library_common/utility/injector';
 
@@ -33,9 +32,15 @@ class FastifyBootMain extends BootMain {
 		  
 		// 	return server;
 		// };
+
+		let http2 = this._appConfig.get('http2', false);
+		http2 = http2 === 'true' ? true : false;
 		  
 		// const fastify = Fastify({ serverFactory, logger: true });
-		const fastify = Fastify({ logger: true });
+		const fastify = Fastify({ 
+			http2: http2,
+			logger: true 
+		});
 		const serverHttp = fastify.server;
 
 		await fastify.register(fastifyRoutes);
@@ -302,7 +307,11 @@ class FastifyBootMain extends BootMain {
 			usageMetrics: this.usageMetricsServiceI
 		});
 
-		return { app: fastify, server: serverHttp, listen: fastify.listen };
+		return { 
+			app: fastify, 
+			server: serverHttp, 
+			listen: fastify.listen 
+		};
     }
 
 	_initAuthentication(map) {
@@ -315,8 +324,8 @@ class FastifyBootMain extends BootMain {
 		return map;
 	}
 
-	_initAppListen(app, server, port, err) {
-		app.listen(port, err);
+	_initAppListen(app, server, address, port, err) {
+		app.listen(port, address, err);
 	}
 
 	async _initAppPost(app, args) {
