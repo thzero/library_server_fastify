@@ -11,10 +11,6 @@ class HomeRoute extends BaseRoute {
 
 	_initializeRoutes(router) {
 		// eslint-disable-next-linethis._prefix
-		router.get(this._join(''), (request, reply) => {
-			reply.status(494).send();
-		});
-		// eslint-disable-next-linethis._prefix
 		router.get(this._join('/'), (request, reply) => {
 			reply.status(494).send();
 		});
