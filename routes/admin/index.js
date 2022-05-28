@@ -34,7 +34,7 @@ class AdminBaseRoute extends BaseRoute {
 
 	_initializeRoutesCreate(router) {
 		const self = this;
-		router.post(this._join('/'),
+		router.post(this._join(''),
 			// authentication(true),
 			// authorization([ `${self._options.role}.create` ]),
 			{
