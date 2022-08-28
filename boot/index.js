@@ -326,7 +326,10 @@ class FastifyBootMain extends BootMain {
 	}
 
 	_initAppListen(app, server, address, port, err) {
-		app.listen(port, address, err);
+		const options = { port: port };
+		if (address)
+			options.host = address;
+		app.listen(options, err);
 	}
 
 	async _initAppPost(app, args) {
