@@ -1,6 +1,6 @@
-import LibraryConstants from '@thzero/library_server/constants';
+import LibraryConstants from '@thzero/library_server/constants.js';
 
-import AdminRoute from './index'
+import AdminRoute from './index.js';
 
 class NewsAdminRoute extends AdminRoute {
 	constructor(urlFragment, role, serviceKey) {

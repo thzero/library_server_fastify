@@ -1,4 +1,4 @@
-import BaseRoute from './index';
+import BaseRoute from './index.js';
 
 class HomeRoute extends BaseRoute {
 	constructor(prefix) {

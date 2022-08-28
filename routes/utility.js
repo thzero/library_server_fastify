@@ -1,8 +1,6 @@
-import LibraryConstants from '@thzero/library_server/constants';
+import LibraryConstants from '@thzero/library_server/constants.js';
 
-import Utility from '@thzero/library_common/utility';
-
-import BaseRoute from './index';
+import BaseRoute from './index.js';
 
 class UtilityRoute extends BaseRoute {
 	constructor(prefix) {

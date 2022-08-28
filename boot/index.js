@@ -2,25 +2,25 @@ import path from 'path';
 
 import Fastify from 'fastify';
 // import fastifyAuth from 'fastify-auth';
-import fastifyAuth from '../plugins/auth';
+import fastifyAuth from '../plugins/auth.js';
 import fastifyCors from 'fastify-cors';
 import fastifyHelmet from 'fastify-helmet';
 import fastifyRoutes from 'fastify-routes';
 import fastifyStatic from 'fastify-static';
 
-import LibraryConstants from '@thzero/library_server/constants';
+import LibraryConstants from '@thzero/library_server/constants.js';
 
-import injector from '@thzero/library_common/utility/injector';
+import injector from '@thzero/library_common/utility/injector.js';
 
-import BootMain from '@thzero/library_server/boot';
+import BootMain from '@thzero/library_server/boot/index.js';
 
-import pluginApiKey from '@thzero/library_server_fastify/plugins/apiKey';
-import pluginResponseTime from '@thzero/library_server_fastify/plugins/responseTime';
-import pluginSettings from '@thzero/library_server_fastify/plugins/settings';
-import pluginUsageMetrics from '@thzero/library_server_fastify/plugins/usageMetrics';
+import pluginApiKey from '@thzero/library_server_fastify/plugins/apiKey.js';
+import pluginResponseTime from '@thzero/library_server_fastify/plugins/responseTime.js';
+import pluginSettings from '@thzero/library_server_fastify/plugins/settings.js';
+import pluginUsageMetrics from '@thzero/library_server_fastify/plugins/usageMetrics.js';
 
-import authenticationDefault from '../middleware/authentication';
-import authorizationDefault from '../middleware/authorization';
+import authenticationDefault from '../middleware/authentication.js';
+import authorizationDefault from '../middleware/authorization.js';
 
 class FastifyBootMain extends BootMain {
 	async _initApp(args, plugins) {

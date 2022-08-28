@@ -1,4 +1,4 @@
-import BaseNewsRoute from './baseNews';
+import BaseNewsRoute from './baseNews.js';
 
 class NewsRoute extends BaseNewsRoute {
 }

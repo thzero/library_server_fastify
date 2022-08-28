@@ -1,6 +1,6 @@
-import BaseNewsApiBootPlugin from '@thzero/library_server/boot/plugins/news';
+import BaseNewsApiBootPlugin from '@thzero/library_server/boot/plugins/news.js';
 
-import newsRoute from '../../routes/news';
+import newsRoute from '../../routes/news.js';
 
 class NewsApiBootPlugin extends BaseNewsApiBootPlugin {
 	_initRoutesNews() {

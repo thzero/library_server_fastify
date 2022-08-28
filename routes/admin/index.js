@@ -1,4 +1,4 @@
-import BaseRoute from '../index';
+import BaseRoute from '../index.js';
 
 class AdminBaseRoute extends BaseRoute {
 	constructor(urlFragment, role, serviceKey) {

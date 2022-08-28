@@ -1,5 +1,5 @@
-import LibraryConstants from '@thzero/library_server/constants';
-import LibraryCommonServiceConstants from '@thzero/library_common_service/constants';
+import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
 
 // require('../utility/string.cjs');
 String.isNullOrEmpty = function(value) {
