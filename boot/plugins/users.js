@@ -1,6 +1,6 @@
-import BaseUsersApiBootPlugin from '@thzero/library_server/boot/plugins/users';
+import BaseUsersApiBootPlugin from '@thzero/library_server/boot/plugins/users.js';
 
-import usersRoute from '../../routes/users';
+import usersRoute from '../../routes/users.js';
 
 class UsersApiBootPlugin extends BaseUsersApiBootPlugin {
 	_initRoutesUsers() {

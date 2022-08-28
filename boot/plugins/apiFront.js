@@ -1,8 +1,8 @@
-import BaseApiFrontBootPlugin from '@thzero/library_server/boot/plugins/apiFront';
+import BaseApiFrontBootPlugin from '@thzero/library_server/boot/plugins/apiFront.js';
 
-import homeRoute from '../../routes/home';
-import utilityRoute from '../../routes/utility';
-import versionRoute from '../../routes/version';
+import homeRoute from '../../routes/home.js';
+import utilityRoute from '../../routes/utility.js';
+import versionRoute from '../../routes/version.js';
 
 class FrontApiBootPlugin extends BaseApiFrontBootPlugin {
 	_initRoutesHome() {

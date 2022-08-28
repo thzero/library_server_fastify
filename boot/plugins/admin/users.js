@@ -1,6 +1,6 @@
-import BaseUsersAdminBootPlugin from '@thzero/library_server/boot/plugins/admin/users';
+import BaseUsersAdminBootPlugin from '@thzero/library_server/boot/plugins/admin/users.js';
 
-import adminUsersRoute from '../../../routes/admin/users'
+import adminUsersRoute from '../../../routes/admin/users.js'
 
 class UsersAdminBootPlugin extends BaseUsersAdminBootPlugin {
 	_initRoutesAdminUsers() {

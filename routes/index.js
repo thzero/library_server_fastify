@@ -1,8 +1,8 @@
 import fastifyPlugin from 'fastify-plugin';
 
-import Utility from '@thzero/library_common/utility';
+import Utility from '@thzero/library_common/utility/index.js';
 
-import BaseRoute from'@thzero/library_server/routes/index';
+import BaseRoute from'@thzero/library_server/routes/index.js';
 
 class FastifyBaseRoute extends BaseRoute {
 	_initializeRouter(app, config) {
