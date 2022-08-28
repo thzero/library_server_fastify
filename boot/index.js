@@ -4,9 +4,9 @@ import Fastify from 'fastify';
 // import fastifyAuth from 'fastify-auth';
 import fastifyAuth from '../plugins/auth.js';
 import fastifyCors from '@fastify/cors';
-import fastifyHelmet from 'fastify-helmet';
-import fastifyRoutes from 'fastify-routes';
-import fastifyStatic from 'fastify-static';
+import fastifyHelmet from '@fastify/helmet';
+import fastifyRoutes from '@fastify/routes';
+import fastifyStatic from '@fastify/static';
 
 import LibraryConstants from '@thzero/library_server/constants.js';
 

@@ -25,13 +25,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "async-mutex": "^0.3.2",
-    "fastify": "^4.5.3",
-    "fastify-auth": "^1.2.0",
+    "@fastify/auth": "^3.0.2",
     "@fastify/cors": "^8.1.0",
-    "fastify-helmet": "^7.1.0",
-    "fastify-routes": "^3.2.0",
-    "fastify-static": "^4.7.0"
+    "@fastify/helmet": "^9.1.0",
+    "@fastify/routes": "^5.0.0",
+    "@fastify/static": "^6.5.0",
+    "async-mutex": "^0.3.2",
+    "fastify": "^4.5.3"
   },
   "peerDependencies": {
     "@thzero/library_common": "^0.16",
