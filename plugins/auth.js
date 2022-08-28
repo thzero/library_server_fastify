@@ -120,4 +120,6 @@ function auth (functions, opts) {
   }
 }
 
-export default fp(checkAuth, '3.x')
+export default fp(checkAuth, {
+	fastify: '4.x'
+})
