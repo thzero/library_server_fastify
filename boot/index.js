@@ -3,7 +3,7 @@ import path from 'path';
 import Fastify from 'fastify';
 // import fastifyAuth from 'fastify-auth';
 import fastifyAuth from '../plugins/auth.js';
-import fastifyCors from 'fastify-cors';
+import fastifyCors from '@fastify/cors';
 import fastifyHelmet from 'fastify-helmet';
 import fastifyRoutes from 'fastify-routes';
 import fastifyStatic from 'fastify-static';
