@@ -6,10 +6,12 @@
 
 An opinionated library of common functionality to bootstrap a Fastify based API application.
 
+### Requirements
+
+#### NodeJs
+
+Requires [NodeJs ](https://nodejs.org) version 18+.
+
 ### Installation
 
 [![NPM](https://nodei.co/npm/@thzero/library_server.png?compact=true)](https://npmjs.org/package/@thzero/library_server_fastify)
-
-### Requirements
-
-#### library_server
