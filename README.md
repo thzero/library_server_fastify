@@ -5,6 +5,7 @@
 # library_server_fastify
 
 An opinionated library of common functionality to bootstrap a Fastify based API application.
+
 ### Requirements
 
 #### NodeJs
