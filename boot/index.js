@@ -3,6 +3,7 @@ import path from 'path';
 import Fastify from 'fastify';
 // import fastifyAuth from '@fastify/auth';
 import fastifyAuth from '../plugins/auth.js';
+import faastifyCompression from '@fastify/compress';
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyRoutes from '@fastify/routes';
@@ -86,6 +87,15 @@ class FastifyBootMain extends BootMain {
 		await fastify.register(
 			fastifyHelmet,
 			helmetOptions
+		);
+
+		const compressionOptions = this._initCompression({ 
+			global: true,
+			requestEncodings: [ 'br', 'gzip' ]
+		});
+		await fastify.register(
+			faastifyCompression,
+			compressionOptions
 		);
 
 		// // error
@@ -334,6 +344,10 @@ class FastifyBootMain extends BootMain {
 
 	async _initAppPost(app, args) {
 		this._initPostRoutes(app);
+	}
+
+	_initCompression(options) {
+		return options;
 	}
 
 	_initCors(options) {
