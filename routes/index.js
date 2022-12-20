@@ -31,10 +31,10 @@ class FastifyBaseRoute extends BaseRoute {
 		if (!reply)
 			throw Error('Invalid context for response.');
 			
-		reply
+		return reply
 			.code(200)
 			.header('Content-Type', 'application/json; charset=utf-8')
-			.send((typeof user === 'string') ? json : Utility.stringify(json));
+			.send((typeof json === 'string') ? json : Utility.stringify(json));
 	}
 }
 

@@ -3,7 +3,7 @@ import path from 'path';
 import Fastify from 'fastify';
 // import fastifyAuth from '@fastify/auth';
 import fastifyAuth from '../plugins/auth.js';
-import faastifyCompression from '@fastify/compress';
+import fastifyCompression from '@fastify/compress';
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyRoutes from '@fastify/routes';
@@ -94,7 +94,7 @@ class FastifyBootMain extends BootMain {
 			requestEncodings: [ 'br', 'gzip' ]
 		});
 		await fastify.register(
-			faastifyCompression,
+			fastifyCompression,
 			compressionOptions
 		);
 

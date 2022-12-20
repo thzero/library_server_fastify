@@ -25,7 +25,8 @@ class PlansRoute extends BaseRoute {
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_PLANS);
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_PLANS].listing(request.correlationId, request.body)).check(request);
-				this._jsonResponse(reply, response);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
 			}
 		);
 	}
