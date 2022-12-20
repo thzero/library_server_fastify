@@ -20,6 +20,15 @@ class UtilityRoute extends BaseRoute {
 	}
 
 	_initializeRoutes(router) {
+		router.get(this._join('/initialize'),
+			// eslint-disable-next-line
+			async (request, reply) => {
+				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].initialize(request.correlationId)).check(request);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return this._jsonResponse(reply, response);
+			}
+		);
+
 		router.post('/logger',
 			// authentication(false),
 			// // authorization('utility'),
@@ -40,6 +49,15 @@ class UtilityRoute extends BaseRoute {
 				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
+			}
+		);
+		
+		router.get(this._join('/openSource'),
+			// eslint-disable-next-line
+			async (request, reply) => {
+				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].openSource(request.correlationId)).check(request);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return this._jsonResponse(reply, response);
 			}
 		);
 	}
