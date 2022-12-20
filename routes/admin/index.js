@@ -50,7 +50,8 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].create(request.correlationId, request.user, request.body)).check(request);
-				this._jsonResponse(reply, response);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -72,7 +73,8 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].delete(request.correlationId, request.user, request.params.id)).check(request);
-				this._jsonResponse(reply, response);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -94,7 +96,8 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].update(request.correlationId, request.user, request.params.id, request.body)).check(request);
-				this._jsonResponse(reply, response);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
 			}
 		);
 	}
@@ -119,7 +122,8 @@ class AdminBaseRoute extends BaseRoute {
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[this._options.serviceKey].search(request.correlationId, request.user, request.body)).check(request);
-				this._jsonResponse(reply, response);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
 			}
 		);
 
