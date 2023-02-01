@@ -1,5 +1,5 @@
-import LibraryConstants from '@thzero/library_server/constants.js';
 import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 // require('../utility/string.cjs');
 String.isNullOrEmpty = function(value) {
@@ -30,8 +30,8 @@ class DefaultAuthenticationMiddleware {
 	init(injector) {
 		this._serviceConfig = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_CONFIG);
 		this._serviceLogger = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_LOGGER);
-		this._serviceSecurity = injector.getService(LibraryConstants.InjectorKeys.SERVICE_SECURITY);
-		this._serviceUsageMetrics = injector.getService(LibraryConstants.InjectorKeys.SERVICE_USAGE_METRIC);
+		this._serviceSecurity = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_SECURITY);
+		this._serviceUsageMetrics = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC);
 
 		return {
 			callback: async (request, reply, done, options) => {

@@ -1,6 +1,6 @@
 import fastifyPlugin from 'fastify-plugin';
 
-import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 export default fastifyPlugin((instance, opts, done) => {
 	instance.addHook('onRequest', (request, reply, next) => {
@@ -9,7 +9,7 @@ export default fastifyPlugin((instance, opts, done) => {
 			return;
 		}
 
-		const key = request.headers[LibraryConstants.Headers.AuthKeys.API];
+		const key = request.headers[LibraryServerConstants.Headers.AuthKeys.API];
 		// opts.logger.debug('KoaBootMain', 'start', 'auth-api-token.key', key);
 		if (!String.isNullOrEmpty(key)) {
 			const auth = request.config.get('auth');

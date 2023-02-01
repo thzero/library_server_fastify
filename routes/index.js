@@ -1,6 +1,6 @@
 import fastifyPlugin from 'fastify-plugin';
 
-import Utility from '@thzero/library_common/utility/index.js';
+import LibraryCommonUtility from '@thzero/library_common/utility/index.js';
 
 import BaseRoute from'@thzero/library_server/routes/index.js';
 
@@ -34,7 +34,7 @@ class FastifyBaseRoute extends BaseRoute {
 		return reply
 			.code(200)
 			.header('Content-Type', 'application/json; charset=utf-8')
-			.send((typeof json === 'string') ? json : Utility.stringify(json));
+			.send((typeof json === 'string') ? json : LibraryCommonUtility.stringify(json));
 	}
 }
 

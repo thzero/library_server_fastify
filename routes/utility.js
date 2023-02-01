@@ -1,4 +1,4 @@
-import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import BaseRoute from './index.js';
 
@@ -11,8 +11,8 @@ class UtilityRoute extends BaseRoute {
 
 	async init(injector, app, config) {
 		await super.init(injector, app, config);
-		// this._serviceUtility = injector.getService(LibraryConstants.InjectorKeys.SERVICE_UTILITY);
-		this._inject(app, injector, LibraryConstants.InjectorKeys.SERVICE_UTILITY, LibraryConstants.InjectorKeys.SERVICE_UTILITY);
+		// this._serviceUtility = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
+		this._inject(app, injector, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
 	}
 
 	get id() {
@@ -23,7 +23,7 @@ class UtilityRoute extends BaseRoute {
 		router.get(this._join('/initialize'),
 			// eslint-disable-next-line
 			async (request, reply) => {
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].initialize(request.correlationId)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].initialize(request.correlationId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}
@@ -45,8 +45,8 @@ class UtilityRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_UTILITY);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
+				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -55,7 +55,7 @@ class UtilityRoute extends BaseRoute {
 		router.get(this._join('/openSource'),
 			// eslint-disable-next-line
 			async (request, reply) => {
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_UTILITY].openSource(request.correlationId)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].openSource(request.correlationId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}
