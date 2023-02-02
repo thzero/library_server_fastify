@@ -9,7 +9,7 @@ import fastifyHelmet from '@fastify/helmet';
 import fastifyRoutes from '@fastify/routes';
 import fastifyStatic from '@fastify/static';
 
-import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import injector from '@thzero/library_common/utility/injector.js';
 
@@ -51,7 +51,7 @@ class FastifyBootMain extends BootMain {
 		// app.use(koaCors({
 		// 	allowMethods: 'GET,POST,DELETE',
 		// 	maxAge : 7200,
-		// 	allowHeaders: `${LibraryConstants.Headers.AuthKeys.API}, ${LibraryConstants.Headers.AuthKeys.AUTH}, ${LibraryConstants.Headers.CorrelationId}, Content-Type`,
+		// 	allowHeaders: `${LibraryServerConstants.Headers.AuthKeys.API}, ${LibraryServerConstants.Headers.AuthKeys.AUTH}, ${ServerConstants.Headers.CorrelationId}, Content-Type`,
 		// 	credentials: true,
 		// 	origin: '*'
 		// }));
@@ -59,12 +59,12 @@ class FastifyBootMain extends BootMain {
 		// fastify.register(fastifyCors, { 
 		// 	allowMethods: 'GET,POST,DELETE',
 		// 	maxAge : 7200,
-		// 	allowHeaders: `${LibraryConstants.Headers.AuthKeys.API}, ${LibraryConstants.Headers.AuthKeys.AUTH}, ${LibraryConstants.Headers.CorrelationId}, Content-Type`,
+		// 	allowHeaders: `${LibraryServerConstants.Headers.AuthKeys.API}, ${LibraryServerConstants.Headers.AuthKeys.AUTH}, ${ServerConstants.Headers.CorrelationId}, Content-Type`,
 		// 	credentials: true,
 		// 	origin: '*'
 		// });
 		const corsOptionsDefault = this._initCors({
-			allowHeaders: [ LibraryConstants.Headers.AuthKeys.API, LibraryConstants.Headers.AuthKeys.AUTH, LibraryConstants.Headers.CorrelationId, 'Content-Type' ],
+			allowHeaders: [ LibraryServerConstants.Headers.AuthKeys.API, LibraryServerConstants.Headers.AuthKeys.AUTH, ServerConstants.Headers.CorrelationId, 'Content-Type' ],
 			credentials: true,
 			maxAge : 7200,
 			methods: ['GET', 'POST', 'DELETE'],
@@ -143,13 +143,13 @@ class FastifyBootMain extends BootMain {
 		// });
 		// // correlationId
 		// app.use(async (ctx, next) => {
-		// 	ctx.correlationId = ctx.request.header[LibraryConstants.Headers.CorrelationId];
+		// 	ctx.correlationId = ctx.request.header[LibraryServerConstants.Headers.CorrelationId];
 		// 	await next();
 		// });
 		// fastify.register(async (instance, opts, done) => {
 		// 	instance.addHook('onRequest', (request, reply, next) => {
 		// 		request.config = this._appConfig;
-		// 		request.correlationId = ctx.request.header[LibraryConstants.Headers.CorrelationId];
+		// 		request.correlationId = ctx.request.header[LibraryServerConstants.Headers.CorrelationId];
 		// 		next();
 		// 	});
 
@@ -195,7 +195,7 @@ class FastifyBootMain extends BootMain {
 		// 		return;
 		// 	}
 
-		// 	const key = ctx.get(LibraryConstants.Headers.AuthKeys.API);
+		// 	const key = ctx.get(LibraryServerConstants.Headers.AuthKeys.API);
 		// 	// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.key', key);
 		// 	if (!String.isNullOrEmpty(key)) {
 		// 		const auth = ctx.config.get('auth');
@@ -227,7 +227,7 @@ class FastifyBootMain extends BootMain {
 		// 			return;
 		// 		}
 	
-		// 		const key = request.get(LibraryConstants.Headers.AuthKeys.API);
+		// 		const key = request.get(LibraryServerConstants.Headers.AuthKeys.API);
 		// 		// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.key', key);
 		// 		if (!String.isNullOrEmpty(key)) {
 		// 			const auth = request.config.get('auth');

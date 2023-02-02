@@ -1,8 +1,8 @@
-import LibraryConstants from '@thzero/library_server/constants.js';
 import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 const separator = ': ';
-
+``
 class DefaultAuthenticationMiddleware {
 	constructor() {
 		this._serviceAuth = null;
@@ -10,9 +10,9 @@ class DefaultAuthenticationMiddleware {
 	}
 
 	init(injector) {
-		this._serviceAuth = injector.getService(LibraryConstants.InjectorKeys.SERVICE_AUTH);
+		this._serviceAuth = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_AUTH);
 		this._serviceLogger = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_LOGGER);
-		this._serviceUsageMetrics = injector.getService(LibraryConstants.InjectorKeys.SERVICE_USAGE_METRIC);
+		this._serviceUsageMetrics = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC);
 
 		return {
 			callback: async (request, reply, done, options) => {
@@ -76,10 +76,10 @@ class DefaultAuthenticationMiddleware {
 		if (!request)
 			return null;
 	
-		const token = request.headers[LibraryConstants.Headers.AuthKeys.AUTH];
+		const token = request.headers[LibraryServerConstants.Headers.AuthKeys.AUTH];
 		if (token !== null && token !== undefined) {
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'token', token, request.correlationId);
-			const split = token.split(LibraryConstants.Headers.AuthKeys.AUTH_BEARER + separator);
+			const split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separator);
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'split', split, request.correlationId);
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'split.length', split.length, request.correlationId);
 			if (split.length > 1)

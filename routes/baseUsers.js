@@ -1,4 +1,4 @@
-import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import BaseRoute from './index.js';
 
@@ -11,8 +11,8 @@ class BaseUsersRoute extends BaseRoute {
 
 	async init(injector, app, config) {
 		await super.init(injector, app, config);
-		// this._serviceUsers = injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-		this._inject(app, injector, LibraryConstants.InjectorKeys.SERVICE_USERS, LibraryConstants.InjectorKeys.SERVICE_USERS);
+		// this._serviceUsers = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
+		this._inject(app, injector, LibraryServerConstants.InjectorKeys.SERVICE_USERS, LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 	}
 
 	get id() {
@@ -44,8 +44,8 @@ class BaseUsersRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].fetchByGamerId(request.correlationId, request.params.gamerId)).check(request);
+				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[ServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerId(request.correlationId, request.params.gamerId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -69,8 +69,8 @@ class BaseUsersRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTag(request.correlationId, request.params.gamerTag)).check(request);
+				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[ServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTag(request.correlationId, request.params.gamerTag)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -93,8 +93,8 @@ class BaseUsersRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].refreshSettings(request.correlationId, request.body)).check(request);
+				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[ServerConstants.InjectorKeys.SERVICE_USERS].refreshSettings(request.correlationId, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -117,8 +117,8 @@ class BaseUsersRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].update(request.correlationId, request.body)).check(request);
+				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[ServerConstants.InjectorKeys.SERVICE_USERS].update(request.correlationId, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}
@@ -141,8 +141,8 @@ class BaseUsersRoute extends BaseRoute {
 			},
 			// eslint-disable-next-line
 			async (request, reply) => {
-				// const service = this._injector.getService(LibraryConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryConstants.InjectorKeys.SERVICE_USERS].updateSettings(request.correlationId, request.body)).check(request);
+				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[ServerConstants.InjectorKeys.SERVICE_USERS].updateSettings(request.correlationId, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}

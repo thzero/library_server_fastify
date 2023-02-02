@@ -1,4 +1,4 @@
-import LibraryConstants from '@thzero/library_server/constants.js';
+import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import AdminRoute from './index.js';
 
@@ -6,7 +6,7 @@ class NewsAdminRoute extends AdminRoute {
 	constructor(urlFragment, role, serviceKey) {
 		urlFragment = urlFragment ? urlFragment : 'news';
 		role = role ? role : 'news';
-		serviceKey = serviceKey ? serviceKey : LibraryConstants.InjectorKeys.SERVICE_ADMIN_NEWS;
+		serviceKey = serviceKey ? serviceKey : LibraryServerConstants.InjectorKeys.SERVICE_ADMIN_NEWS;
 		super(urlFragment, role, serviceKey);
 	}
 
