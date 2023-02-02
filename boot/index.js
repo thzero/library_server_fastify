@@ -64,7 +64,7 @@ class FastifyBootMain extends BootMain {
 		// 	origin: '*'
 		// });
 		const corsOptionsDefault = this._initCors({
-			allowHeaders: [ LibraryServerConstants.Headers.AuthKeys.API, LibraryServerConstants.Headers.AuthKeys.AUTH, ServerConstants.Headers.CorrelationId, 'Content-Type' ],
+			allowHeaders: [ LibraryServerConstants.Headers.AuthKeys.API, LibraryServerConstants.Headers.AuthKeys.AUTH, LibraryServerConstants.Headers.CorrelationId, 'Content-Type' ],
 			credentials: true,
 			maxAge : 7200,
 			methods: ['GET', 'POST', 'DELETE'],
