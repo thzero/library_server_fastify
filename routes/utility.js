@@ -1,3 +1,4 @@
+import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import BaseRoute from './index.js';
@@ -6,13 +7,22 @@ class UtilityRoute extends BaseRoute {
 	constructor(prefix) {
 		super(prefix ? prefix : '/utility');
 
+		this._loggerRequiresAuth = false;
 		// this._serviceUtility = null;
 	}
 
 	async init(injector, app, config) {
 		await super.init(injector, app, config);
+
+		const serviceConfig = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_CONFIG);
 		// this._serviceUtility = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
 		this._inject(app, injector, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
+
+		const auth = serviceConfig.get('auth');
+		if (auth) {
+			const temp = auth.logger && auth.logger.external.required && auth.logger.external.required ? auth.logger.external.required : false;
+			this._loggerRequiresAuth = temp;
+		}
 	}
 
 	get id() {
@@ -29,10 +39,10 @@ class UtilityRoute extends BaseRoute {
 			}
 		);
 
-		router.post('/logger',
+		router.post(this._join('/logger'),
 			// authentication(false),
 			// // authorization('utility'),
-			{
+			this._loggerRequiresAuth ? {
 				preHandler: router.auth([
 					router.authenticationDefault,
 					// router.authorizationDefault
@@ -42,7 +52,7 @@ class UtilityRoute extends BaseRoute {
 					required: false,
 					roles: [ 'utility' ]
 				}),
-			},
+			} : {},
 			// eslint-disable-next-line
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
