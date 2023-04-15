@@ -17,9 +17,6 @@ String.trim = function(value) {
 	return value.trim();
 }
 
-const logicalAnd = 'and';
-const logicalOr = 'or';
-
 class DefaultAuthenticationMiddleware {
 	constructor() {
 		this._serviceConfig = null;
@@ -43,16 +40,8 @@ class DefaultAuthenticationMiddleware {
 	}
 
 	async authorization(request, reply, done, options) {
-		let logical = logicalOr;
-		let roles = [];
-		if (options) {
-			logical = options.logical;
-			if (String.isNullOrEmpty(logical) || (logical !== logicalAnd) || (logical !== logicalOr))
-				logical = logicalOr;
-			
-			if (options.roles && Array.isArray(options.roles) && (options.roles.length > 0))
-				roles = options.roles;
-		}
+		let logical = this._serviceSecurity.initializeOptionsLogical(request.correlationId, options);
+		let roles = this._serviceSecurity.initializeOptionsRoles(request.correlationId, options);
 	
 		// this._serviceLogger.debug('token', request.token);
 		this._serviceLogger.debug('middleware', 'authorization', 'user', request.user, request.correlationId);
@@ -73,11 +62,11 @@ class DefaultAuthenticationMiddleware {
 			// 	request.roles = roles.split(',');
 			// 	request.roles.map(item => item ? item.trim() : item);
 			// }
-			this._initalizeRoles(request, roles);
+			request.roles = this._serviceSecurity.initializeRoles(request.correlationId, request.roles, roles);
 		}
 		this._serviceLogger.debug('middleware', 'authorization', 'roles2', request.roles, request.correlationId);
 	
-		let success = false; //(logical === logicalOr ? false : true);
+		let success = false;
 		if (request.roles && Array.isArray(request.roles) && (request.roles.length > 0)) {
 			const auth = this._serviceConfig.get('auth');
 			if (auth) {
@@ -85,10 +74,10 @@ class DefaultAuthenticationMiddleware {
 				this._serviceLogger.debug('middleware', 'authorization', 'auth.claims.check', auth.claims.check, request.correlationId);
 			}
 			if (auth && auth.claims && auth.claims.check)
-				success = await this._authorizationCheckClaims(request, (logical === logicalOr ? false : true), logical);
+				success = await this._serviceSecurity.authorizationCheckClaims(request.correlationId, request.claims, request.roles, logical);
 	
 			if (!success)
-				success = await this._authorizationCheckRoles(request, (logical === logicalOr ? false : true), logical);
+				success = await this._serviceSecurity.authorizationCheckRoles(request.correlationId, request.user, request.roles, logical);
 		}
 	
 		this._serviceLogger.debug('middleware', 'authorization', 'success', null, request.success, request.correlationId);
@@ -118,103 +107,6 @@ class DefaultAuthenticationMiddleware {
 		// done(new Error('Unauthorized... authentication unknown')); // not for async
 		throw new Error('Unauthorized... authentication unknown');
 	}
-	
-	async _authorizationCheckClaims(request, success, logical) {
-		if (!request)
-			return false;
-		if (!(request.claims && Array.isArray(request.claims)))
-			return false;
-
-		let result;
-		let roleAct;
-		let roleObj;
-		let roleParts;
-		for (const claim of request.claims) {
-			this._serviceLogger.debug('middleware', 'authorization', 'authorization.claim', claim, request.correlationId);
-
-			for (const role of request.roles) {
-				this._serviceLogger.debug('middleware', 'authorization', 'role', role, request.correlationId);
-
-				roleParts = role.split('.');
-				if (roleParts && roleParts.length < 1)
-					success = false;
-
-				roleObj = roleParts[0];
-				roleAct = roleParts.length >= 2 ? roleParts[1] : null
-
-				result = await this._serviceSecurity.validate(claim, null, roleObj, roleAct);
-				this._serviceLogger.debug('middleware', 'authorization', 'result', result, request.correlationId);
-				if (logical === logicalOr)
-					success = success || result;
-				else
-					success = success && result;
-			}
-		}
-
-		return success;
-	}
-
-	async _authorizationCheckRoles(request, success, logical) {
-		if (!request)
-			return false;
-
-		this._serviceLogger.debug('middleware', '_authorizationCheckRoles', 'user', request.user, request.correlationId);
-		if (!(request.user && request.user.roles && Array.isArray(request.user.roles)))
-			return false;
-
-		this._serviceLogger.debug('middleware', '_authorizationCheckRoles', 'logical', logical, request.correlationId);
-
-		let result;
-		let roleAct;
-		let roleObj;
-		let roleParts;
-		for (const userRole of request.user.roles) {
-			this._serviceLogger.debug('middleware', '_authorizationCheckRoles', 'userRole', userRole, request.correlationId);
-
-			for (const role of request.roles) {
-				this._serviceLogger.debug('middleware', '_authorizationCheckRoles', 'role', role, request.correlationId);
-
-				roleParts = role.split('.');
-				if (roleParts && roleParts.length < 1)
-					success = false;
-
-				roleObj = roleParts[0];
-				roleAct = roleParts.length >= 2 ? roleParts[1] : null
-
-				result = await this._serviceSecurity.validate(userRole, null, roleObj, roleAct);
-				this._serviceLogger.debug('middleware', '_authorizationCheckRoles', 'result', result, request.correlationId);
-				if (logical === logicalOr) {
-					if (result)
-						return result;
-
-					success = false;
-				}
-				else
-					success = success && result;
-			}
-		}
-
-		return success;
-	}
-
-	_initalizeRoles(request, roles) {
-		if (Array.isArray(roles)) {
-			this._serviceLogger.debug('middleware', '_initalizeRoles', 'roles1a', roles);
-			request.roles = roles;
-			return;
-		}
-		
-		if ((typeof(roles) === 'string') || (roles instanceof String)) {
-			// logger.debug('middleware', '_initalizeRoles', 'roles1b', roles);
-			request.roles = roles.split(',');
-			request.roles.map(item => item ? item.trim() : item);
-			return;
-		}
-	}
 }
-
-// const authorization = (roles, logical) => {
-// 	if (String.isNullOrEmpty(logical) || (logical !== logicalAnd) || (logical !== logicalOr))
-// 		logical = logicalOr;
 
 export default DefaultAuthenticationMiddleware;
