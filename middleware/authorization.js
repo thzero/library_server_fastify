@@ -119,7 +119,7 @@ class DefaultAuthenticationMiddleware {
 		throw new Error('Unauthorized... authentication unknown');
 	}
 	
-	async _authorizationCheckClaims (request, success, logical) {
+	async _authorizationCheckClaims(request, success, logical) {
 		if (!request)
 			return false;
 		if (!(request.claims && Array.isArray(request.claims)))
@@ -154,7 +154,7 @@ class DefaultAuthenticationMiddleware {
 		return success;
 	}
 
-	async _authorizationCheckRoles (request, success, logical) {
+	async _authorizationCheckRoles(request, success, logical) {
 		if (!request)
 			return false;
 
@@ -197,7 +197,7 @@ class DefaultAuthenticationMiddleware {
 		return success;
 	}
 
-	_initalizeRoles (request, roles) {
+	_initalizeRoles(request, roles) {
 		if (Array.isArray(roles)) {
 			this._serviceLogger.debug('middleware', '_initalizeRoles', 'roles1a', roles);
 			request.roles = roles;
