@@ -35,7 +35,7 @@ class BaseNewsRoute extends BaseRoute {
 			},
 			async (request, reply) => {
 				// const service = this._injector.getService(ServerConstants.InjectorKeys.SERVICE_NEWS);
-				const response = (await router[ServerConstants.InjectorKeys.SERVICE_NEWS].latest(request.correlationId, request.user, parseInt(request.params.date))).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_NEWS].latest(request.correlationId, request.user, request.params.date)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			});
