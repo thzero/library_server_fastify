@@ -2,7 +2,7 @@ import LibraryCommonServiceConstants from '@thzero/library_common_service/consta
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 const separator = ': ';
-``
+
 class DefaultAuthenticationMiddleware {
 	constructor() {
 		this._serviceAuth = null;
