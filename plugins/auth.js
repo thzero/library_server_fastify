@@ -5,6 +5,8 @@ import fp from 'fastify-plugin'
 // const reusify = require('reusify')
 import reusify from 'reusify'
 
+import LibraryCommonConstants from '@thzero/library_common/constants.js';
+
 function checkAuth (fastify, opts, next) {
   fastify.decorate('auth', auth)
   next()
@@ -19,11 +21,11 @@ function auth (functions, opts) {
   }
 
   const options = Object.assign({
-    relation: 'or',
+    relation: LibraryCommonConstants.Security.logicalOr,
     run: null
   }, opts)
 
-  if (options.relation !== 'or' && options.relation !== 'and') {
+  if (options.relation !== LibraryCommonConstants.Security.logicalOr && options.relation !== LibraryCommonConstants.Security.logicalAnd) {
     throw new Error('The value of options.relation should be one of [\'or\', \'and\']')
   }
   if (options.run && options.run !== 'all') {
