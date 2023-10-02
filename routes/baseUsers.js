@@ -1,3 +1,4 @@
+import LibraryCommonnConstants from '@thzero/library_common/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import BaseRoute from './index.js';
@@ -37,7 +38,7 @@ class BaseUsersRoute extends BaseRoute {
 					// router.authorizationDefault
 				], 
 				{ 
-					relation: 'and',
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					required: false,
 					roles: [ 'user' ]
 				}),
@@ -61,8 +62,8 @@ class BaseUsersRoute extends BaseRoute {
 					router.authenticationDefault,
 					// router.authorizationDefault
 				], 
-				{ 
-					relation: 'and',
+				{
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					required: false,
 					roles: [ 'user' ]
 				}),
@@ -87,7 +88,7 @@ class BaseUsersRoute extends BaseRoute {
 					router.authorizationDefault
 				], 
 				{ 
-					relation: 'and',
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					roles: [ 'user' ]
 				}),
 			},
@@ -111,7 +112,7 @@ class BaseUsersRoute extends BaseRoute {
 					// router.authorizationDefault
 				], 
 				{ 
-					relation: 'and',
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					roles: [ 'user' ]
 				}),
 			},
@@ -134,8 +135,8 @@ class BaseUsersRoute extends BaseRoute {
 					router.authenticationDefault,
 					router.authorizationDefault
 				], 
-				{ 
-					relation: 'and',
+				{
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					roles: [ 'user' ]
 				}),
 			},
