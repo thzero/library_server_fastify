@@ -85,7 +85,7 @@ function auth (functions, opts) {
     }
 
     this.onAuth = function onAuth (err, results) {
-      if (that.options.relation === 'or') {
+      if (that.options.relation === LibraryCommonConstants.Security.logicalOr) {
         if (err) {
           return that.nextAuth(err)
         }

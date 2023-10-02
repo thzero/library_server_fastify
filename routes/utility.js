@@ -47,8 +47,8 @@ class UtilityRoute extends BaseRoute {
 					router.authenticationDefault,
 					// router.authorizationDefault
 				], 
-				{ 
-					relation: 'and',
+				{
+					relation: LibraryCommonnConstants.Security.logicalAnd,
 					required: false,
 					roles: [ 'utility' ]
 				}),
