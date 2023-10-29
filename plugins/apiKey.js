@@ -27,7 +27,7 @@ export default fastifyPlugin((instance, opts, done) => {
 
 		(async () => {
 			const usageMetrics = {
-				url: request.routerPath,
+				url: request.routeOptions.url,
 				correlationId: request.correlationId,
 				href: request.url,
 				headers: request.headers,

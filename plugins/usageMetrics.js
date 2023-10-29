@@ -4,7 +4,7 @@ export default fastifyPlugin((instance, opts, done) => {
 	instance.addHook('onSend', (request, reply, payload, next) => {
 		(async () => {
 			const usageMetrics = {
-				url: request.routerPath,
+				url: request.routeOptions.url,
 				correlationId: request.correlationId,
 				href: request.url,
 				headers: request.headers,
