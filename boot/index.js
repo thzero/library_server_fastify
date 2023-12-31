@@ -25,6 +25,7 @@ import authorizationDefault from '../middleware/authorization.js';
 
 class FastifyBootMain extends BootMain {
 	async _initApp(args, plugins) {
+		const __dirname = path.resolve();
 		
 		// const serverFactory = (handler, opts) => {
 		// 	const server = http.createServer((req, res) => {
@@ -34,13 +35,26 @@ class FastifyBootMain extends BootMain {
 		// 	return server;
 		// };
 
-		let http2 = this._appConfig.get('http2', false);
-		http2 = http2 === 'true' ? true : false;
-		this.loggerServiceI.info2(`config.http2.override: ${http2}`);
+		let http2 = this._appConfig.get('http2', { enabled: false });
+		const http2_enabled = http2 && http2.enabled === 'true' ? true : false;
+		this.loggerServiceI.info2(`config.http2.override: ${http2_enabled}`);
+		let https = null;
+		if (http2_enabled) {
+			let http2 = this._appConfig.get('http2', false);
+			if (!http2.key)
+				throw Error('Invalid key, required by http2');
+			if (!http2.cert)
+				throw Error('Invalid cert, required by http2');
+			https = {
+				key: http2.key,
+				cert: http2.cert
+			}
+		}
 		  
 		// const fastify = Fastify({ serverFactory, logger: true });
 		const fastify = Fastify({ 
-			http2: http2,
+			http2: http2_enabled,
+			https: https,
 			logger: true 
 		});
 		const serverHttp = fastify.server;
@@ -180,7 +194,6 @@ class FastifyBootMain extends BootMain {
 
 		// app.use(koaStatic('./public'));
 		// https://github.com/fastify/fastify-static
-		const __dirname = path.resolve();
 		await fastify.register(fastifyStatic, {
 			root: path.join(__dirname, 'public'),
 			prefix: '/public/', // optional: default '/'
