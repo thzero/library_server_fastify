@@ -1,4 +1,4 @@
-import BaseUsersRoute from './baseUser.jss';
+import BaseUsersRoute from './baseUsers.js';
 
 class UsersRoute extends BaseUsersRoute {
 }
