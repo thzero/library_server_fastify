@@ -1,10 +1,10 @@
 {
   "name": "@thzero/library_server_fastify",
   "type": "module",
-  "version": "0.17.26",
+  "version": "0.18.0",
   "version_major": 0,
-  "version_minor": 17,
-  "version_patch": 26,
+  "version_minor": 18,
+  "version_patch": 0,
   "version_date": "02/24/2024",
   "description": "An opinionated library of common functionality to bootstrap a Fastify based API application.",
   "author": "thZero",
@@ -35,8 +35,8 @@
     "fastify": "^4.26.1"
   },
   "peerDependencies": {
-    "@thzero/library_common": "^0.17",
-    "@thzero/library_common_service": "^0.17",
-    "@thzero/library_server": "^0.17"
+    "@thzero/library_common": "^0.18",
+    "@thzero/library_common_service": "^0.18",
+    "@thzero/library_server": "^0.18"
   }
 }
