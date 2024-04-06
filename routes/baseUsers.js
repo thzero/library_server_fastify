@@ -23,9 +23,35 @@ class BaseUsersRoute extends BaseRoute {
 	_initializeRoutes(router) {
 		this._initializeRoutesGamerById(router);
 		this._initializeRoutesGamerByTag(router);
+		this._initializeRoutesByExternalId(router);
 		this._initializeRoutesRefreshSettings(router);
 		this._initializeRoutesUpdate(router);
 		this._initializeRoutesUpdateSettings(router);
+	}
+
+	_initializeRoutesByExternalId(router) {
+		return router.get(this._join('/:externalId'),
+			// authentication(false),
+			// // authorization('user'),
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					// router.authorizationDefault
+				], 
+				{ 
+					relation: LibraryCommonnConstants.Security.logicalAnd,
+					required: false,
+					roles: [ 'user' ]
+				}),
+			},
+			// eslint-disable-next-line
+			async (request, reply) => {
+				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByExternalId(request.correlationId, request.params.externalId)).check(request);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return  this._jsonResponse(reply, response);
+			}
+		);
 	}
 
 	_initializeRoutesGamerById(router) {
