@@ -16,6 +16,15 @@ class UsageMetricsRoute extends BaseRoute {
 	_initializeRoutes(router) {
 		super._initializeRoutes(router);
 
+		router.get(this._join('/usageMetrics/listing'),
+			// eslint-disable-next-line
+			async (request, reply) => {
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC].listing(request.correlationId, request.user, request.body)).check(request);
+				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
+				return this._jsonResponse(reply, response);
+			}
+		);
+
 		router.post(this._join('/usageMetrics/tag'),
 			// eslint-disable-next-line
 			async (request, reply) => {
