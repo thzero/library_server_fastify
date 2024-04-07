@@ -16,7 +16,7 @@ class UsageMetricsRoute extends BaseRoute {
 	_initializeRoutes(router) {
 		super._initializeRoutes(router);
 
-		router.get(this._join('/usageMetrics/listing'),
+		router.post(this._join('/usageMetrics/listing'),
 			// eslint-disable-next-line
 			async (request, reply) => {
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC].listing(request.correlationId, request.user, request.body)).check(request);
