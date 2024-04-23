@@ -297,16 +297,22 @@ class FastifyBootMain extends BootMain {
 		this._routes = [];
 
 		this._initPreRoutes(fastify);
+				
+		console.log('----route.init-----------------------------------');
 
 		for (const pluginRoute of plugins)
 			await pluginRoute.initRoutes(this._routes);
 		
 		await this._initRoutes();
-				
 		for (const route of this._routes) {
 			console.log(route);
 			await route.init(injector, fastify, this._appConfig);
 		}
+
+		console.log('----route.init.complete--------------------------');
+		console.log();
+				
+		console.log('----route.listing--------------------------------');
 
 		let methods;
 		for (let [key, value] of fastify.routes.entries()) {
@@ -315,6 +321,8 @@ class FastifyBootMain extends BootMain {
 				methods.push(item.method);
 			console.log([ key, methods ]);
 		}
+		
+		console.log('----route.listing.complete-----------------------');
 		console.log();
 
 		// // usage metrics
