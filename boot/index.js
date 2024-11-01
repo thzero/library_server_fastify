@@ -129,22 +129,22 @@ class FastifyBootMain extends BootMain {
 		// 		});
 		// 	}
 		// });
-		await fastify.register(async (instance, opts, done) => {
-			// try {
-			// 	done();
-			// }
-			// catch (err) {
-			// 	let status = err.status || 500;
-			// 	if (err instanceof TokenExpiredError) {
-			// 		status = 401;
-			// 		response.header['WWW-Authenticate'] = 'Bearer error="invalid_token", error_description="The access token expired"'
-			// 	}
-			// 	app.emit('error', err, ctx);
-			// 	await this.usageMetricsServiceI.register(ctx, err).catch(() => {
-			// 		this.loggerServiceI.exception('KoaBootMain', 'start', err);
-			// 	});
-			// }
-		});
+		// await fastify.register(async (instance, opts, done) => {
+		// 	// try {
+		// 	// 	done();
+		// 	// }
+		// 	// catch (err) {
+		// 	// 	let status = err.status || 500;
+		// 	// 	if (err instanceof TokenExpiredError) {
+		// 	// 		status = 401;
+		// 	// 		response.header['WWW-Authenticate'] = 'Bearer error="invalid_token", error_description="The access token expired"'
+		// 	// 	}
+		// 	// 	app.emit('error', err, ctx);
+		// 	// 	await this.usageMetricsServiceI.register(ctx, err).catch(() => {
+		// 	// 		this.loggerServiceI.exception('KoaBootMain', 'start', err);
+		// 	// 	});
+		// 	// }
+		// });
 
 		// app.on('error', (err, ctx) => {
 		// 	this.loggerServiceI.error('KoaBootMain', 'start', 'Uncaught Exception', err);
