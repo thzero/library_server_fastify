@@ -14,7 +14,8 @@ export default fastifyPlugin((instance, opts, done) => {
 		if (!String.isNullOrEmpty(key)) {
 			const auth = request.config.get('auth');
 			if (auth) {
-				const apiKey = auth.apiKey;
+				let apiKey = auth.apiKey;
+				apiKey = apiKey ? apiKey.trim() : apiKey;
 				// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.apiKey', apiKey);
 				// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.key===apiKey', (key === apiKey));
 				if (key === apiKey) {
