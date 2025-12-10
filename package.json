@@ -1,11 +1,11 @@
 {
   "name": "@thzero/library_server_fastify",
   "type": "module",
-  "version": "0.18.27",
+  "version": "0.18.28",
   "version_major": 0,
   "version_minor": 18,
-  "version_patch": 27,
-  "version_date": "11/12/2025",
+  "version_patch": 28,
+  "version_date": "12/10/2025",
   "description": "An opinionated library of common functionality to bootstrap a Fastify based API application.",
   "author": "thZero",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@fastify/auth": "^5.0.3",
+    "@fastify/auth": "^5.0.4",
     "@fastify/compress": "^8.3.0",
-    "@fastify/cors": "^11.1.0",
+    "@fastify/cors": "^11.2.0",
     "@fastify/helmet": "^13.0.2",
     "@fastify/routes": "^6.0.2",
     "@fastify/static": "^8.3.0",
