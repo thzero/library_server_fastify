@@ -1,10 +1,10 @@
 {
   "name": "@thzero/library_server_fastify",
   "type": "module",
-  "version": "0.18.37",
+  "version": "0.18.38",
   "version_major": 0,
   "version_minor": 18,
-  "version_patch": 37,
+  "version_patch": 38,
   "version_date": "04/30/2026",
   "description": "An opinionated library of common functionality to bootstrap a Fastify based API application.",
   "author": "thZero",
