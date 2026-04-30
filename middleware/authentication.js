@@ -1,7 +1,8 @@
 import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
-const separator = ': ';
+const separatorColon = ': ';
+const separatorSpace = ' ';
 
 class DefaultAuthenticationMiddleware {
 	constructor() {
@@ -75,13 +76,38 @@ class DefaultAuthenticationMiddleware {
 	_getAuthToken(request) {
 		if (!request)
 			return null;
-	
+
 		const token = request.headers[LibraryServerConstants.Headers.AuthKeys.AUTH];
 		if (token !== null && token !== undefined) {
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'token', token, request.correlationId);
-			const split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separator);
+			let split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorColon);
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'split', split, request.correlationId);
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'split.length', split.length, request.correlationId);
+			if (!split || !(split.length > 1)) {
+				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorColon);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			}
+			if (!split || !(split.length > 1)) {
+				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorColon);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			}
+			if (!split || !(split.length > 1)) {
+				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorSpace);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			}
+			if (!split || !(split.length > 1)) {
+				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorSpace);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			}
+			if (!split || !(split.length > 1)) {
+				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorSpace);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			}
 			if (split.length > 1)
 				return split[1];
 		}
