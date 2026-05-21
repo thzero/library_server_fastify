@@ -1,11 +1,11 @@
 {
   "name": "@thzero/library_server_fastify",
   "type": "module",
-  "version": "0.18.39",
+  "version": "0.18.40",
   "version_major": 0,
   "version_minor": 18,
-  "version_patch": 39,
-  "version_date": "04/30/2026",
+  "version_patch": 40,
+  "version_date": "05/21/2026",
   "description": "An opinionated library of common functionality to bootstrap a Fastify based API application.",
   "author": "thZero",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/thzero/library_server_fastify#readme",
   "engines": {
-    "node": ">=12.8.3"
+    "node": ">=22"
   },
   "scripts": {
     "cli-update": "library-cli --updateversion --pi",
