@@ -1,6 +1,8 @@
 import path from 'path';
 
 import Fastify from 'fastify';
+import fastifyRateLimit from '@fastify/rate-limit';
+
 // import fastifyAuth from '@fastify/auth';
 import fastifyAuth from '../plugins/auth.js';
 import fastifyCompression from '@fastify/compress';
@@ -110,6 +112,14 @@ class FastifyBootMain extends BootMain {
 		await fastify.register(
 			fastifyCompression,
 			compressionOptions
+		);
+		const rateLimitOptions = this._initRateLimit( {
+			max: 100,           // max requests per timeWindow
+			timeWindow: '1 minute'
+		});
+		await fastify.register(
+			fastifyRateLimit,
+			rateLimitOptions
 		);
 
 		// // error
@@ -366,6 +376,10 @@ class FastifyBootMain extends BootMain {
 	}
 
 	_initCompression(options) {
+		return options;
+	}
+
+	_initRateLimit(options) {
 		return options;
 	}
 

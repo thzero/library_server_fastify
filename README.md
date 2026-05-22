@@ -15,3 +15,49 @@ Requires [NodeJs ](https://nodejs.org) version 18+.
 ### Installation
 
 [![NPM](https://nodei.co/npm/@thzero/library_server.png?compact=true)](https://npmjs.org/package/@thzero/library_server_fastify)
+
+### Rate Limiting
+
+Rate limiting is provided by [@fastify/rate-limit](https://github.com/fastify/fastify-rate-limit).
+
+#### Defaults
+
+The following defualts are used.
+
+```js
+    max: 100,          // maximum requests per timeWindow per IP
+    timeWindow: '1 minute'
+```
+
+You can adjust the defaults by overriding the following method in your FastifyBootMain dervived class.
+
+```js
+_initRateLimit()
+```
+
+#### Per-Route Overrides
+
+To apply a stricter limit to a specific route, pass a `rateLimit` config:
+
+```js
+router.post(this._join('/logger'), {
+    config: {
+        rateLimit: {
+            max: 30,
+            timeWindow: '1 minute'
+        }
+    }
+}, async (request, reply) => { ... });
+```
+
+#### Disabling Rate Limiting on a Route
+
+To opt a route out of rate limiting entirely (e.g. a health check or catch-all):
+
+```js
+router.get(this._join('/'), {
+    config: { rateLimit: false }
+}, (request, reply) => {
+    reply.status(494).send();
+});
+```
