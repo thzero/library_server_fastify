@@ -117,10 +117,12 @@ class FastifyBootMain extends BootMain {
 			max: 100,           // max requests per timeWindow
 			timeWindow: '1 minute'
 		});
-		await fastify.register(
-			fastifyRateLimit,
-			rateLimitOptions
-		);
+		if (rateLimitOptions) {
+			await fastify.register(
+				fastifyRateLimit,
+				rateLimitOptions
+			);
+		}
 
 		// // error
 		// app.use(async (ctx, next) => {

@@ -50,6 +50,16 @@ router.post(this._join('/logger'), {
 }, async (request, reply) => { ... });
 ```
 
+#### Disabling Rate Limiting Globally
+
+To disable rate limiting for the entire application, override `_initRateLimit` in your `FastifyBootMain` derived class and return `null`:
+
+```js
+_initRateLimit(options) {
+    return null;
+}
+```
+
 #### Disabling Rate Limiting on a Route
 
 To opt a route out of rate limiting entirely (e.g. a health check or catch-all):
