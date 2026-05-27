@@ -316,10 +316,8 @@ class FastifyBootMain extends BootMain {
 			await pluginRoute.initRoutes(this._routes);
 		
 		await this._initRoutes();
-		for (const route of this._routes) {
-			console.log(route);
+		for (const route of this._routes)
 			await route.init(injector, fastify, this._appConfig);
-		}
 
 		console.log('----route.init.complete--------------------------');
 		console.log();
