@@ -38,7 +38,7 @@ class DefaultAuthenticationMiddleware {
 				this._serviceLogger.debug('middleware', 'authentication', 'results', results, request.correlationId);
 				if (!results || !results.success) {
 					this._serviceLogger.warn('middleware', 'authentication', 'Unauthenticated... invalid token', null, request.correlationId);
-					ctx.throw(401);
+					reply.code(401).send({ error: 'Unauthorized' });
 					return;
 				}
 	
