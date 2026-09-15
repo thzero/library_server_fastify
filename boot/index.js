@@ -17,10 +17,10 @@ import injector from '@thzero/library_common/utility/injector.js';
 
 import BootMain from '@thzero/library_server/boot/index.js';
 
-import pluginApiKey from '@thzero/library_server_fastify/plugins/apiKey.js';
-import pluginResponseTime from '@thzero/library_server_fastify/plugins/responseTime.js';
-import pluginSettings from '@thzero/library_server_fastify/plugins/settings.js';
-import pluginUsageMetrics from '@thzero/library_server_fastify/plugins/usageMetrics.js';
+import pluginApiKey from '../plugins/apiKey.js';
+import pluginResponseTime from '../plugins/responseTime.js';
+import pluginSettings from '../plugins/settings.js';
+import pluginUsageMetrics from '../plugins/usageMetrics.js';
 
 import authenticationDefault from '../middleware/authentication.js';
 import authorizationDefault from '../middleware/authorization.js';
@@ -38,7 +38,7 @@ class FastifyBootMain extends BootMain {
 		// };
 
 		let http2 = this._appConfig.get('http2', { enabled: false });
-		const http2_enabled = http2 && http2.enabled === 'true' ? true : false;
+		const http2_enabled = (http2 && (http2.enabled === true || http2.enabled === 'true'));
 		this.loggerServiceI.info2(`config.http2.override: ${http2_enabled}`);
 		let https = null;
 		if (http2_enabled) {

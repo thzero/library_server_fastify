@@ -1,3 +1,4 @@
+import LibraryCommonnConstants from '@thzero/library_common/constants.js';
 import LibraryCommonServiceConstants from '@thzero/library_common_service/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
@@ -31,7 +32,7 @@ class UtilityRoute extends BaseRoute {
 
 	_initializeRoutes(router) {
 		router.get(this._join('/initialize'),
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].initialize(request.correlationId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
@@ -53,7 +54,7 @@ class UtilityRoute extends BaseRoute {
 					roles: [ 'utility' ]
 				}),
 			} : {},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].logger(request.correlationId, request.body)).check(request);
@@ -63,7 +64,7 @@ class UtilityRoute extends BaseRoute {
 		);
 		
 		router.get(this._join('/openSource'),
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_UTILITY].openSource(request.correlationId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
