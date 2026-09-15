@@ -79,8 +79,12 @@ export default fastifyPlugin((instance, opts, done) => {
 		}
 
 		// Calculate the duration, in nanoseconds …
-		const hrDuration = (request.raw ? request.raw[symbolRequestTime] : request.req[symbolRequestTime]);
-		if (hrDuration) {
+		const hrStart = (request.raw ? request.raw[symbolRequestTime] : request.req[symbolRequestTime]);
+		if (hrStart) {
+			// process.hrtime() measures from an arbitrary origin, so the stored start
+			// value is not itself a duration — it has to be passed back in to get the
+			// elapsed time. Without this the header reported process uptime.
+			const hrDuration = process.hrtime(hrStart);
 			// … convert it to milliseconds …
 			const duration = (hrDuration[0] * 1e3 + hrDuration[1] / 1e6).toFixed(opts.digits);
 			// … add the header to the response

@@ -1,6 +1,7 @@
+import LibraryCommonnConstants from '@thzero/library_common/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
-import BaseRoute from '@thzero/library_server_fastify/routes/index.js';
+import BaseRoute from './index.js';
 
 class UsageMetricsRoute extends BaseRoute {
 	constructor(prefix) {
@@ -17,7 +18,17 @@ class UsageMetricsRoute extends BaseRoute {
 		super._initializeRoutes(router);
 
 		router.post(this._join('/usageMetrics/listing'),
-			// eslint-disable-next-line
+			{
+				preHandler: router.auth([
+					router.authenticationDefault,
+					router.authorizationDefault
+				],
+				{
+					relation: LibraryCommonnConstants.Security.logicalAnd,
+					roles: [ 'admin' ]
+				}),
+			},
+			 
 			async (request, reply) => {
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC].listing(request.correlationId, request.user, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
@@ -25,8 +36,11 @@ class UsageMetricsRoute extends BaseRoute {
 			}
 		);
 
+		// Deliberately anonymous: no authentication chain, so request.user is
+		// undefined here. UsageMetricsService.tag is written for that - it records
+		// `user ? user.id : null` - so client telemetry before sign-in still lands.
 		router.post(this._join('/usageMetrics/tag'),
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USAGE_METRIC].tag(request.correlationId, request.user, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312

@@ -1,4 +1,3 @@
-import LibraryCommonnConstants from '@thzero/library_common/constants.js';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 import BaseRoute from './index.js';
@@ -22,7 +21,7 @@ class PlansRoute extends BaseRoute {
 
 	_initializeRoutes(router) {
 		router.get(this._join(''),
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_PLANS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_PLANS].listing(request.correlationId, request.body)).check(request);

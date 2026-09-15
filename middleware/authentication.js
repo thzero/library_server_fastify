@@ -52,15 +52,21 @@ class DefaultAuthenticationMiddleware {
 		}
 	
 		(async () => {
+			// Strip the credential headers; everything else is kept for diagnostics.
+			const {
+				[LibraryServerConstants.Headers.AuthKeys.AUTH]: authHeader,
+				[LibraryServerConstants.Headers.AuthKeys.API]: apiKeyHeader,
+				...headers
+			} = request.headers;
 			const usageMetrics = {
 				url: request.routeOptions.url,
 				correlationId: request.correlationId,
 				href: request.url,
-				headers: request.headers,
+				headers: headers,
 				host: request.hostname,
 				hostname: request.hostname,
 				querystring: request.query,
-				token: request.token
+				token: String.isNullOrEmpty(request.token) ? null : '[redacted]'
 			};
 			await this._serviceUsageMetrics.register(usageMetrics).catch((err) => {
 				this._serviceLogger.error('middleware', 'authentication', err, null, request.correlationId);
@@ -78,38 +84,36 @@ class DefaultAuthenticationMiddleware {
 			return null;
 
 		const token = request.headers[LibraryServerConstants.Headers.AuthKeys.AUTH];
-		if (token !== null && token !== undefined) {
+		if (String.isString(token)) {
 			this._serviceLogger.debug('middleware', 'getAuthToken', 'token', token, request.correlationId);
-			let split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorColon);
-			this._serviceLogger.debug('middleware', 'getAuthToken', 'split', split, request.correlationId);
-			this._serviceLogger.debug('middleware', 'getAuthToken', 'split.length', split.length, request.correlationId);
-			if (!split || !(split.length > 1)) {
-				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorColon);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			// startsWith, not split: split() searches the whole string, so a header of
+			// 'Garbage Bearer <token>' split to ['Garbage ', '<token>'] and the token
+			// was accepted. The prefix has to be at position 0.
+			const value = token.trim();
+			let prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorColon;
+			this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix', prefix, request.correlationId);
+			if (!value.startsWith(prefix)) {
+				prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorColon;
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix1', prefix, request.correlationId);
 			}
-			if (!split || !(split.length > 1)) {
-				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorColon);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			if (!value.startsWith(prefix)) {
+				prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorColon;
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix1', prefix, request.correlationId);
 			}
-			if (!split || !(split.length > 1)) {
-				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorSpace);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			if (!value.startsWith(prefix)) {
+				prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER + separatorSpace;
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix1', prefix, request.correlationId);
 			}
-			if (!split || !(split.length > 1)) {
-				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorSpace);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			if (!value.startsWith(prefix)) {
+				prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_LOWER_CASE + separatorSpace;
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix1', prefix, request.correlationId);
 			}
-			if (!split || !(split.length > 1)) {
-				split = token.split(LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorSpace);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1', split, request.correlationId);
-				this._serviceLogger.debug('middleware', 'getAuthToken', 'split1.length', split.length, request.correlationId);
+			if (!value.startsWith(prefix)) {
+				prefix = LibraryServerConstants.Headers.AuthKeys.AUTH_BEARER_UPPER_CASE + separatorSpace;
+				this._serviceLogger.debug('middleware', 'getAuthToken', 'prefix1', prefix, request.correlationId);
 			}
-			if (split.length > 1)
-				return split[1];
+			if (value.startsWith(prefix))
+				return value.substring(prefix.length).trim();
 		}
 	
 		this._serviceLogger.debug('middleware', 'getAuthToken', 'fail', null, request.correlationId);

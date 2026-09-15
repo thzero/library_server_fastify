@@ -40,6 +40,17 @@ class DefaultAuthenticationMiddleware {
 	}
 
 	async authorization(request, reply, done, options) {
+		// `required: false` marks a route as anonymous-friendly - the authentication
+		// middleware lets a caller through with no token and therefore no
+		// request.user. Authorization only applies once a user is actually present;
+		// without this an anonymous caller would be denied on a route that
+		// explicitly permits them. Same expression as authentication.js uses.
+		const required = options && (options.required !== null) && (options.required !== undefined) ? options.required : true;
+		if (!required && !request.user) {
+			this._serviceLogger.debug('middleware', 'authorization', 'anonymous.permitted', true, request.correlationId);
+			return;
+		}
+
 		let logical = this._serviceSecurity.initializeOptionsLogical(request.correlationId, options);
 		let roles = this._serviceSecurity.initializeOptionsRoles(request.correlationId, options);
 	
@@ -87,15 +98,21 @@ class DefaultAuthenticationMiddleware {
 		}
 	
 		(async () => {
+			// Strip the credential headers; everything else is kept for diagnostics.
+			const {
+				[LibraryServerConstants.Headers.AuthKeys.AUTH]: authHeader,
+				[LibraryServerConstants.Headers.AuthKeys.API]: apiKeyHeader,
+				...headers
+			} = request.headers;
 			const usageMetrics = {
 				url: request.routeOptions.url,
 				correlationId: request.correlationId,
 				href: request.url,
-				headers: request.headers,
+				headers: headers,
 				host: request.hostname,
 				hostname: request.hostname,
 				querystring: request.query,
-				token: request.token
+				token: String.isNullOrEmpty(request.token) ? null : '[redacted]'
 			};
 			await this._serviceUsageMetrics.register(usageMetrics).catch((err) => {
 				this._serviceLogger.error('middleware', 'authorization', err, null, request.correlationId);

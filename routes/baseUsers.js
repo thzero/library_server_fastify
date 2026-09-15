@@ -36,7 +36,7 @@ class BaseUsersRoute extends BaseRoute {
 			{
 				preHandler: router.auth([
 					router.authenticationDefault,
-					// router.authorizationDefault
+					router.authorizationDefault
 				], 
 				{ 
 					relation: LibraryCommonnConstants.Security.logicalAnd,
@@ -44,7 +44,7 @@ class BaseUsersRoute extends BaseRoute {
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByExternalId(request.correlationId, request.params.externalId)).check(request);
@@ -61,7 +61,7 @@ class BaseUsersRoute extends BaseRoute {
 			{
 				preHandler: router.auth([
 					router.authenticationDefault,
-					// router.authorizationDefault
+					router.authorizationDefault
 				], 
 				{ 
 					relation: LibraryCommonnConstants.Security.logicalAnd,
@@ -69,7 +69,7 @@ class BaseUsersRoute extends BaseRoute {
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerId(request.correlationId, request.params.gamerId)).check(request);
@@ -86,7 +86,7 @@ class BaseUsersRoute extends BaseRoute {
 			{
 				preHandler: router.auth([
 					router.authenticationDefault,
-					// router.authorizationDefault
+					router.authorizationDefault
 				], 
 				{
 					relation: LibraryCommonnConstants.Security.logicalAnd,
@@ -94,7 +94,7 @@ class BaseUsersRoute extends BaseRoute {
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTag(request.correlationId, request.params.gamerTag)).check(request);
@@ -118,7 +118,7 @@ class BaseUsersRoute extends BaseRoute {
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].refreshSettings(request.correlationId, request.body)).check(request);
@@ -135,14 +135,14 @@ class BaseUsersRoute extends BaseRoute {
 			{
 				preHandler: router.auth([
 					router.authenticationDefault,
-					// router.authorizationDefault
+					router.authorizationDefault
 				], 
 				{ 
 					relation: LibraryCommonnConstants.Security.logicalAnd,
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].update(request.correlationId, request.body)).check(request);
@@ -166,7 +166,7 @@ class BaseUsersRoute extends BaseRoute {
 					roles: [ 'user' ]
 				}),
 			},
-			// eslint-disable-next-line
+			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
 				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].updateSettings(request.correlationId, request.body)).check(request);

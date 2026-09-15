@@ -27,15 +27,21 @@ export default fastifyPlugin((instance, opts, done) => {
 		}
 
 		(async () => {
+			// Strip the credential headers; everything else is kept for diagnostics.
+			const {
+				[LibraryServerConstants.Headers.AuthKeys.AUTH]: authHeader,
+				[LibraryServerConstants.Headers.AuthKeys.API]: apiKeyHeader,
+				...headers
+			} = request.headers;
 			const usageMetrics = {
 				url: request.routeOptions.url,
 				correlationId: request.correlationId,
 				href: request.url,
-				headers: request.headers,
+				headers: headers,
 				host: request.hostname,
 				hostname: request.hostname,
 				querystring: request.query,
-				token: request.token
+				token: String.isNullOrEmpty(request.token) ? null : '[redacted]'
 			};
 			await opts.usageMetrics.register(usageMetrics).catch((err) => {
 				opts.logger.error('FastifyBootMain', 'start', 'usageMetrics', err);
