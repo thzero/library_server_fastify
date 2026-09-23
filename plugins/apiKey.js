@@ -3,6 +3,21 @@ import fastifyPlugin from 'fastify-plugin';
 import LibraryServerConstants from '@thzero/library_server/constants.js';
 
 export default fastifyPlugin((instance, opts, done) => {
+	// The configured key does not change while the process runs. It used to be
+	// read from config and trimmed on every request that carried an api key.
+	// Resolved on first use, from opts.config when the boot passes it and from the
+	// request's config otherwise; undefined means not yet resolved.
+	let apiKey;
+	const resolve = (request) => {
+		if (apiKey !== undefined)
+			return apiKey;
+
+		const config = opts.config ? opts.config : request.config;
+		const auth = config ? config.get('auth') : null;
+		apiKey = (auth && auth.apiKey) ? auth.apiKey.trim() : null;
+		return apiKey;
+	};
+
 	instance.addHook('onRequest', (request, reply, next) => {
 		if (request.originalUrl === '/favicon.ico') {
 			next();
@@ -10,19 +25,12 @@ export default fastifyPlugin((instance, opts, done) => {
 		}
 
 		const key = request.headers[LibraryServerConstants.Headers.AuthKeys.API];
-		// opts.logger.debug('KoaBootMain', 'start', 'auth-api-token.key', key);
 		if (!String.isNullOrEmpty(key)) {
-			const auth = request.config.get('auth');
-			if (auth) {
-				let apiKey = auth.apiKey;
-				apiKey = apiKey ? apiKey.trim() : apiKey;
-				// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.apiKey', apiKey);
-				// this.loggerServiceI.debug('KoaBootMain', 'start', 'auth-api-token.key===apiKey', (key === apiKey));
-				if (key === apiKey) {
-					request.apiKey = key;
-					next();
-					return;
-				}
+			const expected = resolve(request);
+			if (expected && key === expected) {
+				request.apiKey = key;
+				next();
+				return;
 			}
 		}
 
@@ -48,7 +56,9 @@ export default fastifyPlugin((instance, opts, done) => {
 			});
 		})();
 
-		console.log('Unauthorized... auth-api-token failure');
+		// Through the logger, not console.log: that was a synchronous stdout write
+		// that any caller with a bad key could trigger at will.
+		opts.logger.warn('FastifyBootMain', 'apiKey', 'Unauthorized: api key failure', null, request.correlationId);
 		reply.status(401).send();
 	});
 

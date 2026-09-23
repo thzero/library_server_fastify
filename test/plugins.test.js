@@ -82,6 +82,33 @@ describe('responseTime', () => {
 		assert.equal(logged.length, 1);
 		assert.ok(logged[0].includes(reply.headers['X-Response-Time']));
 	});
+
+	it('does not build the log line when info is off', async () => {
+		const logged = [];
+		const instance = load(pluginResponseTime, { logger: { isLevelEnabled: () => false, info2: (line) => logged.push(line) } });
+		const request = newRequest();
+		const reply = newReply();
+		await new Promise(resolve => instance.hooks.onRequest[0](request, reply, resolve));
+		await new Promise(resolve => instance.hooks.onSend[0](request, reply, null, resolve));
+		assert.equal(logged.length, 0);
+		assert.ok(reply.headers['X-Response-Time'], 'the header is still set');
+	});
+
+	// Regression: setServerTiming read this.res, which Fastify has not provided
+	// since v3; the onRequest hook stores against reply.raw.
+	it('setServerTiming works against reply.raw', async () => {
+		const instance = newInstance();
+		let decorated;
+		instance.decorateReply = (name, fn) => { decorated = fn; };
+		unwrap(pluginResponseTime)(instance, { logger: { info2() {} } }, () => {});
+		const request = newRequest();
+		const reply = newReply();
+		await new Promise(resolve => instance.hooks.onRequest[0](request, reply, resolve));
+		assert.equal(decorated.call(reply, 'db', 12.5, 'query'), true);
+		assert.equal(decorated.call(reply, 'db', 1), false, 'a repeat is ignored');
+		await new Promise(resolve => instance.hooks.onSend[0](request, reply, null, resolve));
+		assert.equal(reply.headers['Server-Timing'], 'db;dur=12.5;desc=query');
+	});
 });
 
 describe('usageMetrics plugin', () => {
@@ -129,7 +156,7 @@ describe('apiKey plugin', () => {
 	const config = (apiKey) => ({ get: () => ({ apiKey }) });
 
 	it('passes a request carrying the configured key', async () => {
-		const instance = load(pluginApiKey, { logger: { error() {} }, usageMetrics: { async register() {} } });
+		const instance = load(pluginApiKey, { logger: { error() {}, warn() {} }, usageMetrics: { async register() {} } });
 		const request = newRequest({ [API]: 'secret-key' });
 		request.config = config('secret-key');
 		const reply = newReply();
@@ -139,10 +166,11 @@ describe('apiKey plugin', () => {
 		assert.equal(reply.statusCode, null);
 	});
 
-	it('rejects a request with the wrong key', async () => {
+	it('rejects a request with the wrong key, through the logger rather than console', async () => {
 		const registered = [];
+		const warnings = [];
 		const instance = load(pluginApiKey, {
-			logger: { error() {} },
+			logger: { error() {}, warn(clazz, method, message) { warnings.push(message); } },
 			usageMetrics: { async register(payload) { registered.push(payload); } }
 		});
 		const request = newRequest({ [API]: 'wrong' });
@@ -151,6 +179,28 @@ describe('apiKey plugin', () => {
 		instance.hooks.onRequest[0](request, reply, () => { throw new Error('should not continue'); });
 		await new Promise(resolve => setImmediate(resolve));
 		assert.equal(reply.statusCode, 401);
+		assert.equal(warnings.length, 1);
+	});
+
+	// The configured key was read from config and trimmed on every request.
+	it('resolves the configured key once', async () => {
+		let reads = 0;
+		const instance = load(pluginApiKey, { logger: { error() {}, warn() {} }, usageMetrics: { async register() {} } });
+		const counting = { get: () => { reads++; return { apiKey: ' secret-key ' }; } };
+		for (let i = 0; i < 3; i++) {
+			const request = newRequest({ [API]: 'secret-key' });
+			request.config = counting;
+			await new Promise(resolve => instance.hooks.onRequest[0](request, newReply(), resolve));
+		}
+		assert.equal(reads, 1);
+	});
+
+	it('takes the config from opts when the boot passes it', async () => {
+		const instance = load(pluginApiKey, { config: config('from-opts'), logger: { error() {}, warn() {} }, usageMetrics: { async register() {} } });
+		const request = newRequest({ [API]: 'from-opts' });
+		let passed = false;
+		await new Promise(resolve => instance.hooks.onRequest[0](request, newReply(), () => { passed = true; resolve(); }));
+		assert.equal(passed, true);
 	});
 
 	// Regression: the recorded payload carried request.headers verbatim, which
@@ -158,7 +208,7 @@ describe('apiKey plugin', () => {
 	it('does not record the rejected key', async () => {
 		const registered = [];
 		const instance = load(pluginApiKey, {
-			logger: { error() {} },
+			logger: { error() {}, warn() {} },
 			usageMetrics: { async register(payload) { registered.push(payload); } }
 		});
 		const request = newRequest({ [API]: 'ak_live_WRONG', 'user-agent': 'test-agent' });
