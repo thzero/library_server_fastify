@@ -54,10 +54,13 @@ class FastifyBootMain extends BootMain {
 		}
 		  
 		// const fastify = Fastify({ serverFactory, logger: true });
-		const fastify = Fastify({ 
+		// Fastify's own logger writes an incoming and a completed line per request,
+		// and the response-time plugin logs one through the application logger as
+		// well. logging.fastify false keeps the application line and drops the two.
+		const fastify = Fastify({
 			http2: http2_enabled,
 			https: https,
-			logger: true 
+			logger: this._appConfig.get('logging.fastify', true) !== false
 		});
 		const serverHttp = fastify.server;
 
@@ -86,12 +89,10 @@ class FastifyBootMain extends BootMain {
 			methods: ['GET', 'POST', 'DELETE'],
 			origin: '*'
 		});
-		await fastify.register(fastifyCors, (instance) => {
-			return (req, callback) => {
-				let corsOptions = corsOptionsDefault;
-				callback(null, corsOptions) // callback expects two parameters: error and options
-			}
-		});
+		// The options are static, so they are passed as such. Registering with a
+		// delegator meant a callback invocation per request to hand back the same
+		// object every time.
+		await fastify.register(fastifyCors, corsOptionsDefault);
 		
 		// // https://www.npmjs.com/package/koa-helmet
 		// app.use(koaHelmet());

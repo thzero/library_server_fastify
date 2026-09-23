@@ -24,6 +24,17 @@ class DefaultAuthenticationMiddleware {
 		this._serviceSecurity = null;
 	}
 
+	// Whether claims are checked is static config. It used to be read, and logged
+	// twice at debug, on every authorized request.
+	_claimsCheck() {
+		if (this._claimsCheckI === undefined) {
+			const auth = this._serviceConfig.get('auth');
+			this._claimsCheckI = !!(auth && auth.claims && auth.claims.check);
+			this._serviceLogger.debug('middleware', 'authorization', 'auth.claims.check', this._claimsCheckI);
+		}
+		return this._claimsCheckI;
+	}
+
 	init(injector) {
 		this._serviceConfig = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_CONFIG);
 		this._serviceLogger = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_LOGGER);
@@ -79,12 +90,7 @@ class DefaultAuthenticationMiddleware {
 	
 		let success = false;
 		if (request.roles && Array.isArray(request.roles) && (request.roles.length > 0)) {
-			const auth = this._serviceConfig.get('auth');
-			if (auth) {
-				this._serviceLogger.debug('middleware', 'authorization', 'auth.claims', auth.claims, request.correlationId);
-				this._serviceLogger.debug('middleware', 'authorization', 'auth.claims.check', auth.claims.check, request.correlationId);
-			}
-			if (auth && auth.claims && auth.claims.check)
+			if (this._claimsCheck())
 				success = await this._serviceSecurity.authorizationCheckClaims(request.correlationId, request.claims, request.roles, logical);
 	
 			if (!success)

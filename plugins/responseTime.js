@@ -90,7 +90,10 @@ export default fastifyPlugin((instance, opts, done) => {
 			// … add the header to the response
 			reply.header(opts.header, duration);
 
-			opts.logger.info2(`${request.method} ${request.url} - ${duration}`);
+			// Ask before building the line; the logger would drop it anyway with info
+			// off, but only after the string was made.
+			if (!opts.logger.isLevelEnabled || opts.logger.isLevelEnabled('info'))
+				opts.logger.info2(`${request.method} ${request.url} - ${duration}`);
 		}
 
 		next();
@@ -98,8 +101,10 @@ export default fastifyPlugin((instance, opts, done) => {
 
 	// Can be used to add custom timing information
 	instance.decorateReply('setServerTiming', function (name, duration, description) {
-		// Reference to the res object storing values …
-		const serverTiming = this.res[symbolServerTiming];
+		// Reference to the res object storing values. Fastify v2 named it res; from
+		// v3 it is raw, and the onRequest hook above stores against whichever the
+		// reply has.
+		const serverTiming = (this.raw ? this.raw : this.res)[symbolServerTiming];
 		// … return if value already exists (all subsequent occurrences MUST be ignored without signaling an error) …
 		if (serverTiming.hasOwnProperty(name)) {
 			return false;
