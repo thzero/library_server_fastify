@@ -37,12 +37,16 @@ class FastifyBootMain extends BootMain {
 		// 	return server;
 		// };
 
+		// http2 is either an object ({ enabled, key, cert }) or a bare flag. The
+		// bare flag is what an environment variable mapped straight onto http2
+		// produces, as the string 'true' rather than a boolean.
 		let http2 = this._appConfig.get('http2', { enabled: false });
-		const http2_enabled = (http2 && (http2.enabled === true || http2.enabled === 'true'));
+		if (http2 === null || typeof http2 !== 'object')
+			http2 = { enabled: http2 };
+		const http2_enabled = (http2.enabled === true || http2.enabled === 'true');
 		this.loggerServiceI.info2(`config.http2.override: ${http2_enabled}`);
 		let https = null;
 		if (http2_enabled) {
-			let http2 = this._appConfig.get('http2', false);
 			if (!http2.key)
 				throw Error('Invalid key, required by http2');
 			if (!http2.cert)
@@ -57,10 +61,13 @@ class FastifyBootMain extends BootMain {
 		// Fastify's own logger writes an incoming and a completed line per request,
 		// and the response-time plugin logs one through the application logger as
 		// well. logging.fastify false keeps the application line and drops the two.
+		const trustProxy = this._initTrustProxy(this._appConfig.get('trustProxy', false));
+		this.loggerServiceI.info2(`config.trustProxy: ${trustProxy}`);
 		const fastify = Fastify({
 			http2: http2_enabled,
 			https: https,
-			logger: this._appConfig.get('logging.fastify', true) !== false
+			logger: this._appConfig.get('logging.fastify', true) !== false,
+			trustProxy: trustProxy
 		});
 		const serverHttp = fastify.server;
 
@@ -395,6 +402,22 @@ class FastifyBootMain extends BootMain {
 
 	_initRoute(route) {
 		this._routes.push(route);
+	}
+
+	// https://fastify.dev/docs/latest/Reference/Server/#trustproxy
+	// Set when behind a reverse proxy (for example one terminating HTTP/3) so
+	// request.ip, request.protocol and request.host come from the X-Forwarded-*
+	// headers. Environment variables arrive as strings, so 'true' and 'false'
+	// become booleans, a whole number becomes a hop count, and anything else is
+	// passed through as a comma separated list of trusted addresses or CIDRs.
+	_initTrustProxy(value) {
+		if (value === null || value === undefined || value === '' || value === false || value === 'false')
+			return false;
+		if (value === true || value === 'true')
+			return true;
+		if (typeof value === 'string' && /^\d+$/.test(value.trim()))
+			return Number(value.trim());
+		return value;
 	}
 }
 

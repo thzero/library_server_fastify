@@ -61,10 +61,23 @@ Override these on your `FastifyBootMain` derived class. Each is called during `_
 | `_initAuthentication(map)` | The authentication middleware registered as `authenticationDefault` |
 | `_initAuthorization(map)` | The authorization middleware registered as `authorizationDefault` |
 | `_initRoute(route)` | Called per route as it is registered |
+| `_initTrustProxy(value)` | Converts the `trustProxy` config value into Fastify's `trustProxy` option |
 | `_initAppListen(app, server, address, port, err)` | The listen callback |
 | `_initAppPost(app, args)` | After the app is built, before it listens |
 
 The inherited `library_server` hooks — `_initServices`, `_initRepositories`, `_initServicesLoggers`, `_initRoutes`, `_initCleanup` and the rest — apply here too.
+
+### Server configuration
+
+Read from the application config under `app`:
+
+| Key | Default | Purpose |
+|---|---|---|
+| `http2` | `{ "enabled": false }` | Serves HTTP/2 over TLS. Either an object `{ "enabled", "key", "cert" }` or a bare `true`/`"true"`; `key` and `cert` are required when enabled |
+| `trustProxy` | `false` | Fastify's [`trustProxy`](https://fastify.dev/docs/latest/Reference/Server/#trustproxy). `true`/`"true"` trusts every hop, a whole number trusts that many hops, and any other string is a comma separated list of trusted addresses or CIDRs |
+| `logging.fastify` | `true` | Fastify's own per request log lines |
+
+Node does not ship an HTTP/3 server, so HTTP/3 is served by a reverse proxy in front of the app (Caddy, nginx 1.25+, Cloudflare). Set `trustProxy` when running that way so `request.ip` and `request.protocol` reflect the client rather than the proxy.
 
 ## Middleware
 
