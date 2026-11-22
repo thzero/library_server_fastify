@@ -47,7 +47,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByExternalId(request.correlationId, request.params.externalId)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByExternalIdForUser(request.correlationId, request.user, request.params.externalId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -72,7 +72,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerId(request.correlationId, request.params.gamerId)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerIdForUser(request.correlationId, request.user, request.params.gamerId)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -97,7 +97,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTag(request.correlationId, request.params.gamerTag)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].fetchByGamerTagForUser(request.correlationId, request.user, request.params.gamerTag)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -121,7 +121,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].refreshSettings(request.correlationId, request.body)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].refreshSettingsForUser(request.correlationId, request.user, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return  this._jsonResponse(reply, response);
 			}
@@ -145,7 +145,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].update(request.correlationId, request.body)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].updateForUser(request.correlationId, request.user, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}
@@ -169,7 +169,7 @@ class BaseUsersRoute extends BaseRoute {
 			 
 			async (request, reply) => {
 				// const service = this._injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_USERS);
-				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].updateSettings(request.correlationId, request.body)).check(request);
+				const response = (await router[LibraryServerConstants.InjectorKeys.SERVICE_USERS].updateSettingsForUser(request.correlationId, request.user, request.body)).check(request);
 				// https://github.com/fastify/fastify-compress/issues/215#issuecomment-1210598312
 				return this._jsonResponse(reply, response);
 			}
