@@ -13,17 +13,14 @@ class UtilityRoute extends BaseRoute {
 	}
 
 	async init(injector, app, config) {
+		const serviceConfig = config ?? injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_CONFIG);
+		const auth = serviceConfig ? serviceConfig.get('auth', null) : null;
+		this._loggerRequiresAuth = !!(auth && auth.logger && auth.logger.external && (auth.logger.external.required === true));
+
 		await super.init(injector, app, config);
 
-		const serviceConfig = injector.getService(LibraryCommonServiceConstants.InjectorKeys.SERVICE_CONFIG);
 		// this._serviceUtility = injector.getService(LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
 		this._inject(app, injector, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY, LibraryServerConstants.InjectorKeys.SERVICE_UTILITY);
-
-		const auth = serviceConfig.get('auth');
-		if (auth) {
-			const temp = auth.logger && auth.logger.external.required && auth.logger.external.required ? auth.logger.external.required : false;
-			this._loggerRequiresAuth = temp;
-		}
 	}
 
 	get id() {
@@ -50,7 +47,7 @@ class UtilityRoute extends BaseRoute {
 				], 
 				{
 					relation: LibraryCommonnConstants.Security.logicalAnd,
-					required: false,
+					required: true,
 					roles: [ 'utility' ]
 				}),
 			} : {},
